@@ -2,17 +2,18 @@
 
 @layer base {
   body {
-    background-color: #09090b; /* Deep zinc black */
-    color: #f4f4f5; /* Off-white text */
+    background-color: #09090b;
+    color: #f4f4f5;
     overflow-x: hidden;
-    ::selection {
-  background-color: #3f3f46;
-  color: #ffffff;
-}
   }
 }
 
-/* Custom smooth scrollbar */
+::selection {
+  background-color: #3f3f46;
+  color: #ffffff;
+}
+
+/* Custom Smooth Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -25,4 +26,52 @@
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #3f3f46;
+}
+
+/* Custom Glassmorphism Container Class */
+.glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(11px);
+  -webkit-backdrop-filter: blur(11px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.05),
+    inset 0 0 26px 13px rgba(255, 255, 255, 0.03);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.8),
+    transparent
+  );
+  pointer-events: none;
+}
+
+.glass-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.8),
+    transparent,
+    rgba(255, 255, 255, 0.3)
+  );
+  pointer-events: none;
 }
