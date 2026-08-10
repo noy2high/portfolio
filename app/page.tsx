@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import { ArrowUpRight, Play } from "lucide-react";
-import Image from "next/image";
 import PortfolioGrid from "./components/PortfolioGrid";
 import Experience from "./components/Experience";
 import Footer from "./components/Footer";
@@ -37,31 +36,29 @@ export default function Home() {
       </motion.header>
 
       {/* Main Hero Content */}
-      <div className="my-auto pt-12 pb-8 z-10 max-w-5xl mx-auto w-full relative flex flex-col items-start text-left">
+      <div className="my-auto pt-16 pb-12 z-10 max-w-5xl mx-auto w-full relative flex flex-col items-start text-left">
 
-        {/* Hero Graphic Container (Balanced Sizing) */}
+        {/* Custom Glassmorphism Header Badge */}
         <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="relative w-full max-w-md sm:max-w-lg md:max-w-xl h-auto -ml-2 mb-2"
+          className="glass-badge px-10 py-4 mb-8 flex items-baseline gap-1 shadow-2xl select-none"
         >
-          <Image
-            src="/Port.png"
-            alt="Portfolio Header"
-            width={600}
-            height={200}
-            priority
-            className="w-full h-auto object-contain drop-shadow-[0_8px_24px_rgba(255,255,255,0.12)]"
-          />
+          <span className="font-playfair font-black text-5xl md:text-7xl text-white tracking-tight leading-none">
+            Port
+          </span>
+          <span className="font-cursive font-normal text-4xl md:text-6xl text-zinc-100 -ml-1 transform translate-y-1">
+            folio
+          </span>
         </motion.div>
 
-        {/* Custom About Text (Tightly Overlapped) */}
+        {/* Custom About Text */}
         <motion.p 
-          initial={{ opacity: 0, y: 15 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="text-lg md:text-xl text-zinc-300 max-w-3xl font-light leading-relaxed mb-10 -mt-2 sm:-mt-4 relative z-10"
+          className="text-lg md:text-xl text-zinc-300 max-w-3xl font-light leading-relaxed mb-10"
         >
           Resourceful, intuitive, and built for collaboration. I’m someone who naturally balances creative thinking with solid discipline. Rather than staying in a single lane, I bring a fast learning curve and strong execution to whatever initiative I tackle. From administrative work to hands-on projects, I focus on clear communication, dynamic teamwork, and delivering polished results.
         </motion.p>
@@ -71,7 +68,7 @@ export default function Home() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="flex flex-wrap gap-4 items-center mb-16 relative z-10"
+          className="flex flex-wrap gap-4 items-center mb-16"
         >
           <motion.a
             whileHover={{ scale: 1.03 }}
