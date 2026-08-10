@@ -114,6 +114,7 @@ uniform float uPaletteAlpha[10];
 uniform float uCellSize;
 uniform float uGamma;
 uniform float uPaletteBias;
+uniform vec3 uBgColor;
 out vec4 fragColor;
 
 void main() {
@@ -147,7 +148,9 @@ void main() {
     dotCol = mix(uPalette[seg], uPalette[seg + 1], f);
     dotOpacity = mix(uPaletteAlpha[seg], uPaletteAlpha[seg + 1], f);
   }
-  fragColor = vec4(dotCol, mark * dotOpacity);
+  
+  vec3 finalColor = mix(uBgColor, dotCol, mark * dotOpacity * 0.20);
+  fragColor = vec4(finalColor, 1.0);
 }`;
 
 type Rgba = { r: number; g: number; b: number; a: number };
@@ -210,10 +213,11 @@ export default function GlitterWrap({
     const container = containerRef.current;
     if (!container) return;
 
+    // Fixed WebGL settings for Safari/iOS compatibility
     const renderer = new Renderer({
       dpr: Math.min(window.devicePixelRatio || 1, 2),
-      alpha: true,
-      premultipliedAlpha: false,
+      alpha: false,
+      premultipliedAlpha: true,
     });
     const gl = renderer.gl;
     container.appendChild(gl.canvas);
@@ -253,6 +257,8 @@ export default function GlitterWrap({
       }
     }
 
+    const bgRgba = parseColorToRgba(bgColor);
+
     const dotProgram = new Program(gl, {
       vertex: dotVertexShader,
       fragment: dotFragmentShader,
@@ -265,6 +271,7 @@ export default function GlitterWrap({
         uCellSize: { value: mapLinear(cellSize, 1, 100, 6, 60) },
         uGamma: { value: mapLinear(gamma, 1, 20, 0.5, 8) },
         uPaletteBias: { value: paletteBias * 0.05 },
+        uBgColor: { value: [bgRgba.r, bgRgba.g, bgRgba.b] },
       },
     });
 
@@ -302,7 +309,7 @@ export default function GlitterWrap({
         container.removeChild(gl.canvas);
       }
     };
-  }, [frequency, speed, colors, cellSize, gamma, paletteBias]);
+  }, [frequency, speed, colors, cellSize, gamma, paletteBias, bgColor]);
 
   return (
     <div
@@ -311,8 +318,7 @@ export default function GlitterWrap({
         inset: 0,
         width: "100vw",
         height: "100vh",
-        background: bgColor,
-        opacity: 0.45,
+        backgroundColor: bgColor,
         pointerEvents: "none",
         zIndex: 0,
         overflow: "hidden",
