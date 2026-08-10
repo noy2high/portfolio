@@ -5,21 +5,25 @@ import { ArrowUpRight, Play } from "lucide-react";
 import PortfolioGrid from "./components/PortfolioGrid";
 import Experience from "./components/Experience";
 import Footer from "./components/Footer";
+import GlitterWrap from "./components/GlitterWrap";
 
 export default function Home() {
   return (
     <main className="relative min-h-screen bg-zinc-950 text-zinc-100 overflow-hidden flex flex-col justify-between p-8 md:p-16">
       
+      {/* Animated Starfield Tunnel Background */}
+      <GlitterWrap />
+
       {/* Dynamic Background Glow FX */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-purple-600/15 blur-[120px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-10 right-10 w-[400px] h-[400px] bg-blue-600/10 blur-[140px] rounded-full pointer-events-none" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-purple-600/15 blur-[120px] rounded-full pointer-events-none z-0" />
+      <div className="absolute bottom-10 right-10 w-[400px] h-[400px] bg-blue-600/10 blur-[140px] rounded-full pointer-events-none z-0" />
 
       {/* Navigation Header */}
       <motion.header 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="flex justify-between items-center z-10 max-w-7xl mx-auto w-full"
+        className="flex justify-between items-center z-10 max-w-7xl mx-auto w-full relative"
       >
         <span className="text-xl font-bold tracking-tighter uppercase text-zinc-200">
           ARYA<span className="text-purple-500">.</span>
@@ -32,7 +36,7 @@ export default function Home() {
       </motion.header>
 
       {/* Main Hero Content */}
-      <div className="my-auto py-20 z-10 max-w-5xl mx-auto w-full">
+      <div className="my-auto py-20 z-10 max-w-5xl mx-auto w-full relative">
 
         {/* Animated Title */}
         <motion.h1 
