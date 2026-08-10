@@ -89,9 +89,8 @@ export default function Footer() {
         })}
       </div>
 
-      <div className="flex flex-col sm:flex-row justify-between items-center text-xs text-zinc-600 font-mono pt-8 border-t border-zinc-900/80 gap-4">
-        <span>© {new Date().getFullYear()} ARYA. All rights reserved.</span>
-        <span>Built with Next.js, Tailwind & Framer Motion</span>
+      <div className="flex justify-center items-center text-xs text-zinc-600 font-mono pt-8 border-t border-zinc-900/80">
+        <span>2025 ARYA. All rights reserved.</span>
       </div>
 
     </footer>
