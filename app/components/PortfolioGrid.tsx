@@ -75,7 +75,7 @@ export default function PortfolioGrid() {
           </motion.h2>
         </div>
 
-        <div className="flex gap-2 p-1.5 bg-zinc-900/80 border border-zinc-800 rounded-full w-fit">
+        <div className="flex gap-2 p-1.5 glass-card rounded-full w-fit">
           {CATEGORIES.map((tab) => (
             <button
               key={tab}
@@ -108,9 +108,9 @@ export default function PortfolioGrid() {
               whileHover={{ y: -8 }}
               transition={{ duration: 0.4 }}
               key={project.id}
-              className="group relative bg-zinc-900/60 border border-zinc-800/80 rounded-3xl p-6 overflow-hidden flex flex-col justify-between min-h-[380px] hover:border-zinc-600 transition-colors"
+              className="group glass-card p-8 flex flex-col justify-between min-h-[380px] hover:border-white/40 transition-colors"
             >
-              <div className={`absolute inset-0 bg-gradient-to-br ${project.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl pointer-events-none`} />
+              <div className={`absolute inset-0 bg-gradient-to-br ${project.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`} />
 
               <div className="flex justify-between items-center z-10">
                 <span className="flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-950/80 border border-zinc-800 text-xs text-zinc-300 font-medium backdrop-blur-sm">
@@ -127,10 +127,10 @@ export default function PortfolioGrid() {
               </div>
 
               <div className="my-auto py-8 flex flex-col items-center justify-center z-10">
-                <div className="w-16 h-16 rounded-2xl bg-zinc-950 border border-zinc-800 flex items-center justify-center text-zinc-500 group-hover:text-purple-400 group-hover:scale-110 group-hover:border-purple-500/50 transition-all shadow-xl">
+                <div className="w-16 h-16 rounded-2xl bg-zinc-950/80 border border-zinc-800 flex items-center justify-center text-zinc-500 group-hover:text-purple-400 group-hover:scale-110 group-hover:border-purple-500/50 transition-all shadow-xl">
                   {project.type === "video" ? <Play size={28} className="fill-current ml-1" /> : <Eye size={28} />}
                 </div>
-                <span className="text-xs text-zinc-500 font-mono mt-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                <span className="text-xs text-zinc-400 font-mono mt-3 opacity-0 group-hover:opacity-100 transition-opacity">
                   {project.type === "video" ? "PREVIEW VIDEO" : "VIEW FULL HD"}
                 </span>
               </div>
@@ -139,13 +139,13 @@ export default function PortfolioGrid() {
                 <h3 className="text-2xl font-bold text-zinc-100 group-hover:text-white mb-2">
                   {project.title}
                 </h3>
-                <p className="text-zinc-400 text-sm mb-4 font-light">
+                <p className="text-zinc-300 text-sm mb-4 font-light">
                   {project.desc}
                 </p>
 
                 <div className="flex flex-wrap gap-2">
                   {project.tags.map((tag) => (
-                    <span key={tag} className="text-[11px] font-mono px-2.5 py-1 rounded-md bg-zinc-950/60 text-zinc-400 border border-zinc-800">
+                    <span key={tag} className="text-[11px] font-mono px-2.5 py-1 rounded-md bg-zinc-950/60 text-zinc-300 border border-zinc-800">
                       #{tag}
                     </span>
                   ))}
