@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ArrowUpRight, Play } from "lucide-react";
+import Image from "next/image";
 import PortfolioGrid from "./components/PortfolioGrid";
 import Experience from "./components/Experience";
 import Footer from "./components/Footer";
@@ -36,17 +37,24 @@ export default function Home() {
       </motion.header>
 
       {/* Main Hero Content */}
-      <div className="my-auto py-20 z-10 max-w-5xl mx-auto w-full relative">
+      <div className="my-auto py-12 z-10 max-w-5xl mx-auto w-full relative">
 
-        {/* Animated Title */}
-        <motion.h1 
+        {/* Hero Title Image Replacement */}
+        <motion.div 
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-5xl md:text-8xl font-extrabold tracking-tight leading-[1.05] mb-8"
+          className="relative w-full max-w-2xl h-auto mb-8"
         >
-          Crafting <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-amber-400">visuals</span> & dynamic motion.
-        </motion.h1>
+          <Image
+            src="/Port.png"
+            alt="Portfolio"
+            width={700}
+            height={250}
+            priority
+            className="w-full h-auto object-contain drop-shadow-[0_10px_20px_rgba(255,255,255,0.15)]"
+          />
+        </motion.div>
 
         {/* Custom About Text */}
         <motion.p 
