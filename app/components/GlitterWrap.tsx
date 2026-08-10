@@ -312,6 +312,7 @@ export default function GlitterWrap({
         width: "100vw",
         height: "100vh",
         background: bgColor,
+        opacity: 0.45,
         pointerEvents: "none",
         zIndex: 0,
         overflow: "hidden",
