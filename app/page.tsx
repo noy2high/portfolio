@@ -3,6 +3,8 @@
 import { motion } from "framer-motion";
 import { ArrowUpRight, Play, Sparkles, Film, Palette } from "lucide-react";
 import PortfolioGrid from "./components/PortfolioGrid";
+import Experience from "./components/Experience";
+import Footer from "./components/Footer";
 
 export default function Home() {
   return (
@@ -17,7 +19,7 @@ export default function Home() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="flex justify-between items-center z-10"
+        className="flex justify-between items-center z-10 max-w-7xl mx-auto w-full"
       >
         <span className="text-xl font-bold tracking-tighter uppercase text-zinc-200">
           ARYA<span className="text-purple-500">.</span>
@@ -30,7 +32,7 @@ export default function Home() {
       </motion.header>
 
       {/* Main Hero Content */}
-      <div className="my-auto py-20 z-10 max-w-5xl">
+      <div className="my-auto py-20 z-10 max-w-5xl mx-auto w-full">
         <motion.div 
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -78,11 +80,11 @@ export default function Home() {
           <motion.a
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
-            href="#showreel"
+            href="#contact"
             className="flex items-center gap-2 px-6 py-3.5 bg-zinc-900 text-zinc-200 border border-zinc-800 font-medium rounded-full hover:bg-zinc-800 hover:border-zinc-700 transition-all"
           >
             <Play size={16} className="fill-zinc-200" />
-            <span>Watch Showreel</span>
+            <span>Get In Touch</span>
           </motion.a>
         </motion.div>
       </div>
@@ -91,7 +93,7 @@ export default function Home() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1, delay: 0.7 }}
-        className="grid grid-cols-2 md:grid-cols-3 gap-6 pt-8 border-t border-zinc-900 z-10 text-xs md:text-sm text-zinc-500 mb-20"
+        className="grid grid-cols-2 md:grid-cols-3 gap-6 pt-8 border-t border-zinc-900 z-10 text-xs md:text-sm text-zinc-500 mb-20 max-w-5xl mx-auto w-full"
       >
         <div className="flex items-center gap-2">
           <Palette size={16} className="text-purple-400" />
@@ -107,7 +109,11 @@ export default function Home() {
         </div>
       </motion.div>
 
+      {/* Sections */}
       <PortfolioGrid />
+      <Experience />
+      <Footer />
+
     </main>
   );
 }
