@@ -30,8 +30,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${playfair.variable} ${vibes.variable}`}>
       <body className={inter.className}>
-        <SmoothScroll />
-        {children}
+        <SmoothScroll>
+          {children}
+        </SmoothScroll>
       </body>
     </html>
   );
