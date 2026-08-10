@@ -84,8 +84,8 @@ export default function Home() {
       <div className="absolute bottom-10 right-10 w-[250px] sm:w-[400px] h-[250px] sm:h-[400px] bg-blue-600/10 blur-[140px] rounded-full pointer-events-none z-0" />
 
       {/* Sticky Navigation Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 px-6 md:px-12 py-4 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-900/50">
-        <div className="max-w-7xl mx-auto w-full flex justify-between items-center">
+      <header className="fixed top-0 left-0 right-0 z-50 py-4 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-900/50">
+        <div className="max-w-7xl mx-auto w-full px-8 md:px-16 flex justify-between items-center">
           <a href="#" className="text-xl font-bold tracking-tighter uppercase text-zinc-200">
             ARYA<span className="text-purple-500">.</span>
           </a>
@@ -113,15 +113,15 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Main Hero Content — Matched Width Container */}
-      <section id="about-hero" className="my-auto pt-8 pb-12 z-10 max-w-7xl mx-auto w-full px-6 md:px-12 relative flex flex-col items-start text-left scroll-mt-32">
+      {/* Main Hero Content — Strict Grid Alignment */}
+      <section id="about-hero" className="my-auto pt-8 pb-12 z-10 max-w-7xl mx-auto w-full px-8 md:px-16 relative scroll-mt-32">
 
         {/* Introduction Tag */}
         <motion.span 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-purple-400 font-mono text-xs sm:text-sm tracking-wider uppercase mb-3"
+          className="text-purple-400 font-mono text-xs sm:text-sm tracking-wider uppercase block mb-3"
         >
           // Introduction
         </motion.span>
@@ -131,7 +131,7 @@ export default function Home() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="glass-badge px-8 sm:px-12 py-3 sm:py-4 mb-8 flex items-baseline justify-center gap-1.5 shadow-2xl select-none"
+          className="glass-badge px-8 sm:px-12 py-3 sm:py-4 mb-8 flex items-baseline justify-center gap-1.5 shadow-2xl select-none w-fit"
         >
           <span className="font-playfair font-black text-4xl sm:text-6xl md:text-7xl text-white tracking-tight leading-none inline-block">
             Port
@@ -141,12 +141,12 @@ export default function Home() {
           </span>
         </motion.div>
 
-        {/* Custom About Text — Stretched Across to Right Side */}
+        {/* Custom About Text — Toned Down Font Size */}
         <motion.p 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="text-lg sm:text-xl md:text-2xl text-zinc-300 max-w-5xl font-light leading-relaxed mb-10"
+          className="text-base sm:text-lg md:text-xl text-zinc-300 max-w-4xl font-light leading-relaxed mb-10"
         >
           Resourceful, intuitive, and built for collaboration. I’m someone who naturally balances creative thinking with solid discipline. Rather than staying in a single lane, I bring a fast learning curve and strong execution to whatever initiative I tackle. From administrative work to hands-on projects, I focus on clear communication, dynamic teamwork, and delivering polished results.
         </motion.p>
