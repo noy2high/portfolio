@@ -17,6 +17,14 @@ const NAV_ITEMS = [
 export default function Home() {
   const [activeTab, setActiveTab] = useState("About");
 
+  // Force scroll to top on initial page load / refresh
+  useEffect(() => {
+    if ("scrollRestoration" in history) {
+      history.scrollRestoration = "manual";
+    }
+    window.scrollTo(0, 0);
+  }, []);
+
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY + 200;
@@ -39,7 +47,6 @@ export default function Home() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Slower, smooth programmatic scroll calculation
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string, name: string) => {
     e.preventDefault();
     setActiveTab(name);
@@ -50,13 +57,13 @@ export default function Home() {
       const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - 100;
       const startPosition = window.pageYOffset;
       const distance = targetPosition - startPosition;
-      const duration = 1200; // Slower glide (1.2 seconds)
+      const duration = 1200;
       let start: number | null = null;
 
       const step = (timestamp: number) => {
         if (!start) start = timestamp;
         const progress = timestamp - start;
-        const ease = (t: number) => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t; // Ease in-out
+        const ease = (t: number) => (t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t);
         window.scrollTo(0, startPosition + distance * ease(Math.min(progress / duration, 1)));
         if (progress < duration) {
           window.requestAnimationFrame(step);
@@ -84,7 +91,7 @@ export default function Home() {
             ARYA<span className="text-purple-500">.</span>
           </a>
 
-          {/* Clean Outer Shell Navbar (Bold on Active) */}
+          {/* Clean Outer Shell Navbar */}
           <nav className="flex gap-2 sm:gap-4 p-1.5 px-3 bg-zinc-900/80 border border-zinc-800/80 rounded-full backdrop-blur-md">
             {NAV_ITEMS.map((item) => {
               const isActive = activeTab === item.name;
