@@ -1,6 +1,9 @@
 @import "tailwindcss";
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
   body {
     background-color: #09090b;
     color: #f4f4f5;
@@ -45,8 +48,4 @@
 /* Font Helper Classes */
 .font-playfair {
   font-family: var(--font-playfair), serif;
-}
-
-.font-cursive {
-  font-family: var(--font-vibes), cursive;
 }
