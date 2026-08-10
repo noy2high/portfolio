@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Mail, MessageCircle, Linkedin, Github, ArrowUpRight } from "lucide-react";
+import { Mail, MessageCircle, Globe, Share2, ArrowUpRight } from "lucide-react";
 
 const SOCIALS = [
   {
@@ -22,14 +22,14 @@ const SOCIALS = [
     name: "LinkedIn",
     value: "Arya Yonas Pratama",
     href: "https://www.linkedin.com/in/arya-yonas-pratama-9864a6223/",
-    icon: Linkedin,
+    icon: Share2,
     color: "hover:text-blue-400 hover:border-blue-500/50",
   },
   {
     name: "GitHub",
     value: "@noy2high",
     href: "https://github.com/noy2high",
-    icon: Github,
+    icon: Globe,
     color: "hover:text-zinc-200 hover:border-zinc-500",
   },
 ];
@@ -59,7 +59,6 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Social Links Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-20">
         {SOCIALS.map((soc) => {
           const Icon = soc.icon;
@@ -90,7 +89,6 @@ export default function Footer() {
         })}
       </div>
 
-      {/* Copyright */}
       <div className="flex flex-col sm:flex-row justify-between items-center text-xs text-zinc-600 font-mono pt-8 border-t border-zinc-900/80 gap-4">
         <span>© {new Date().getFullYear()} ARYA. All rights reserved.</span>
         <span>Built with Next.js, Tailwind & Framer Motion</span>
