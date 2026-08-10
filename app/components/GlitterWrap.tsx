@@ -1,448 +1,324 @@
 "use client";
 
-import { CSSProperties, useEffect, useRef } from "react";
+import { useEffect, useRef, type CSSProperties } from "react";
+import {
+  Renderer,
+  Camera,
+  Mesh,
+  Plane,
+  Program,
+  RenderTarget as OglRenderTarget,
+} from "ogl";
 
-const RenderTarget = {
-  current: () => "preview",
-  canvas: "canvas",
-  export: "export",
-  thumbnail: "thumbnail",
-  preview: "preview",
-};
+const perlinVertexShader = `#version 300 es
+in vec2 uv;
+in vec2 position;
+out vec2 vUv;
+void main() {
+  vUv = uv;
+  gl_Position = vec4(position, 0., 1.);
+}`;
 
-function parseColor(input?: string): [number, number, number, number] {
-  if (!input) return [255, 255, 255, 1];
-  const s = input.trim();
-  if (s.startsWith("#")) {
-    let hex = s.slice(1);
-    if (hex.length === 3) {
-      hex = hex.split("").map((c) => c + c).join("");
-    }
-    const num = parseInt(hex, 16);
-    return [(num >> 16) & 255, (num >> 8) & 255, num & 255, 1];
-  }
-  const m = s.match(/rgba?\(([^)]+)\)/i);
-  if (m) {
-    const parts = m[1].split(",").map((p) => parseFloat(p.trim()));
-    return [
-      parts[0] || 0,
-      parts[1] || 0,
-      parts[2] || 0,
-      parts[3] == null ? 1 : parts[3],
-    ];
-  }
-  return [255, 255, 255, 1];
+const perlinFragmentShader = `#version 300 es
+precision mediump float;
+uniform float uFrequency;
+uniform float uTime;
+uniform float uSpeed;
+uniform float uValue;
+uniform vec2 uResolution;
+in vec2 vUv;
+out vec4 fragColor;
+
+vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+vec4 permute(vec4 x) { return mod289(((x * 34.0) + 1.0) * x); }
+vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
+
+float snoise(vec3 v) {
+  const vec2  C = vec2(1.0/6.0, 1.0/3.0) ;
+  const vec4  D = vec4(0.0, 0.5, 1.0, 2.0);
+  vec3 i  = floor(v + dot(v, C.yyy));
+  vec3 x0 = v - i + dot(i, C.xxx);
+  vec3 g = step(x0.yzx, x0.xyz);
+  vec3 l = 1.0 - g;
+  vec3 i1 = min( g.xyz, l.zxy );
+  vec3 i2 = max( g.xyz, l.zxy );
+  vec3 x1 = x0 - i1 + C.xxx;
+  vec3 x2 = x0 - i2 + C.yyy;
+  vec3 x3 = x0 - D.yyy;
+  i = mod289(i);
+  vec4 p = permute( permute( permute(
+             i.z + vec4(0.0, i1.z, i2.z, 1.0 ))
+           + i.y + vec4(0.0, i1.y, i2.y, 1.0 ))
+           + i.x + vec4(0.0, i1.x, i2.x, 1.0 ));
+  float n_ = 0.142857142857;
+  vec3  ns = n_ * D.wyz - D.xzx;
+  vec4 j = p - 49.0 * floor(p * ns.z * ns.z);
+  vec4 x_ = floor(j * ns.z);
+  vec4 y_ = floor(j - 7.0 * x_ );
+  vec4 x = x_ *ns.x + ns.yyyy;
+  vec4 y = y_ *ns.x + ns.yyyy;
+  vec4 h = 1.0 - abs(x) - abs(y);
+  vec4 b0 = vec4( x.xy, y.xy );
+  vec4 b1 = vec4( x.zw, y.zw );
+  vec4 s0 = floor(b0)*2.0 + 1.0;
+  vec4 s1 = floor(b1)*2.0 + 1.0;
+  vec4 sh = -step(h, vec4(0.0));
+  vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy ;
+  vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww ;
+  vec3 p0 = vec3(a0.xy,h.x);
+  vec3 p1 = vec3(a0.zw,h.y);
+  vec3 p2 = vec3(a1.xy,h.z);
+  vec3 p3 = vec3(a1.zw,h.w);
+  vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2,p2), dot(p3,p3)));
+  p0 *= norm.x;
+  p1 *= norm.y;
+  p2 *= norm.z;
+  p3 *= norm.w;
+  vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
+  m = m * m;
+  return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3) ) );
 }
 
-type Props = {
-  particleCount?: number;
-  color1?: string;
-  color2?: string;
-  color3?: string;
+vec3 hsv2rgb(vec3 c) {
+  vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+  vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+  return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+}
+
+void main() {
+  vec2 uv = vUv;
+  float aspect = uResolution.x / max(uResolution.y, 1.0);
+  uv = (uv - 0.5) * vec2(aspect, 1.0) + 0.5;
+  float hue = abs(snoise(vec3(uv * uFrequency, uTime * uSpeed)));
+  vec3 rainbowColor = hsv2rgb(vec3(hue, 1.0, uValue));
+  fragColor = vec4(rainbowColor, 1.0);
+}`;
+
+const dotVertexShader = `#version 300 es
+in vec2 uv;
+in vec2 position;
+out vec2 vUv;
+void main() {
+  vUv = uv;
+  gl_Position = vec4(position, 0., 1.);
+}`;
+
+const dotFragmentShader = `#version 300 es
+precision highp float;
+uniform vec2 uResolution;
+uniform sampler2D uTexture;
+uniform int uPaletteCount;
+uniform vec3 uPalette[10];
+uniform float uPaletteAlpha[10];
+uniform float uCellSize;
+uniform float uGamma;
+uniform float uPaletteBias;
+out vec4 fragColor;
+
+void main() {
+  vec2 pix = gl_FragCoord.xy;
+  float cell = max(uCellSize, 1.0);
+
+  vec2 cellIdx = floor(pix / cell);
+  vec2 cellCenter = (cellIdx + 0.5) * cell;
+  vec3 col = texture(uTexture, cellCenter / uResolution.xy).rgb;
+  float gray = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
+  gray = pow(clamp(gray, 0.0001, 1.0), uGamma);
+
+  vec2 cellUV = fract(pix / cell) - 0.5;
+  float dist = length(cellUV);
+  float radius = clamp(gray + uPaletteBias, 0.0, 1.0) * 0.5;
+  float aa = fwidth(dist) + 1e-4;
+  float mark = 1.0 - smoothstep(radius - aa, radius + aa, dist);
+
+  float g2 = clamp(gray + uPaletteBias, 0.0, 1.0);
+  int cnt = max(uPaletteCount, 1);
+  vec3 dotCol;
+  float dotOpacity;
+  if (cnt <= 1) {
+    dotCol = uPalette[0];
+    dotOpacity = uPaletteAlpha[0];
+  } else {
+    float scaled = g2 * float(cnt - 1);
+    int seg = int(floor(scaled));
+    seg = clamp(seg, 0, cnt - 2);
+    float f = clamp(scaled - float(seg), 0.0, 1.0);
+    dotCol = mix(uPalette[seg], uPalette[seg + 1], f);
+    dotOpacity = mix(uPaletteAlpha[seg], uPaletteAlpha[seg + 1], f);
+  }
+  fragColor = vec4(dotCol, mark * dotOpacity);
+}`;
+
+type Rgba = { r: number; g: number; b: number; a: number };
+
+function parseColorToRgba(input: string): Rgba {
+  if (!input) return { r: 0, g: 0, b: 0, a: 1 };
+  const str = input.trim();
+  const rgbaMatch = str.match(
+    /rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*(?:,\s*([\d.]+)\s*)?\)/i
+  );
+  if (rgbaMatch) {
+    return {
+      r: Math.max(0, Math.min(255, parseFloat(rgbaMatch[1]))) / 255,
+      g: Math.max(0, Math.min(255, parseFloat(rgbaMatch[2]))) / 255,
+      b: Math.max(0, Math.min(255, parseFloat(rgbaMatch[3]))) / 255,
+      a: rgbaMatch[4] !== undefined ? Math.max(0, Math.min(1, parseFloat(rgbaMatch[4]))) : 1,
+    };
+  }
+  const hex = str.replace(/^#/, "");
+  if (hex.length === 6) {
+    return {
+      r: parseInt(hex.slice(0, 2), 16) / 255,
+      g: parseInt(hex.slice(2, 4), 16) / 255,
+      b: parseInt(hex.slice(4, 6), 16) / 255,
+      a: 1,
+    };
+  }
+  return { r: 1, g: 1, b: 1, a: 1 };
+}
+
+function mapLinear(val: number, inMin: number, inMax: number, outMin: number, outMax: number) {
+  if (inMax === inMin) return outMin;
+  return outMin + ((val - inMin) / (inMax - inMin)) * (outMax - outMin);
+}
+
+const MAX_COLORS = 10;
+
+export default function GlitterWrap({
+  frequency = 2,
+  speed = 2,
+  bgColor = "#09090b",
+  colors = ["#FFFFFF"],
+  cellSize = 14,
+  gamma = 6,
+  paletteBias = -6,
+  style,
+}: {
+  frequency?: number;
   speed?: number;
-  density?: number;
-  starSize?: number;
-  focalDepth?: number;
-  turbulence?: number;
-  brightness?: number;
-  glitterIntensity?: number;
-  trailAmount?: number;
-  reverse?: boolean;
+  bgColor?: string;
+  colors?: string[];
+  cellSize?: number;
+  gamma?: number;
+  paletteBias?: number;
   style?: CSSProperties;
-};
-
-const COMPONENT_DEFAULTS = {
-  particleCount: 500,
-  color1: "#F078FF",
-  color2: "#FFFC9B",
-  color3: "#FFE500",
-  speed: 1,
-  density: 54,
-  starSize: 6,
-  focalDepth: 5,
-  turbulence: 3,
-  brightness: 37,
-  glitterIntensity: 4,
-  trailAmount: 60,
-  reverse: false,
-};
-
-function OriginkitBaseGlitterWrap(userProps: Props) {
-  const style = userProps.style;
-
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const rafRef = useRef<number | null>(null);
-  const sizeRef = useRef({ w: 0, h: 0, dpr: 1 });
-
-  const renderTarget = RenderTarget.current();
-  const isStatic =
-    renderTarget === RenderTarget.export ||
-    renderTarget === RenderTarget.thumbnail;
-
-  const propsRef = useRef(userProps);
-  propsRef.current = userProps;
-
-  const colorCacheRef = useRef({
-    color1: "",
-    color2: "",
-    color3: "",
-    parsed1: [255, 255, 255, 1] as [number, number, number, number],
-    parsed2: [177, 158, 239, 1] as [number, number, number, number],
-    parsed3: [205, 217, 255, 1] as [number, number, number, number],
-  });
-
-  const getCachedColors = () => {
-    const p = propsRef.current;
-    const c = colorCacheRef.current;
-    const c1 = p.color1 ?? COMPONENT_DEFAULTS.color1;
-    const c2 = p.color2 ?? COMPONENT_DEFAULTS.color2;
-    const c3 = p.color3 ?? COMPONENT_DEFAULTS.color3;
-
-    if (c1 !== c.color1) {
-      c.color1 = c1;
-      c.parsed1 = parseColor(c1);
-    }
-    if (c2 !== c.color2) {
-      c.color2 = c2;
-      c.parsed2 = parseColor(c2);
-    }
-    if (c3 !== c.color3) {
-      c.color3 = c3;
-      c.parsed3 = parseColor(c3);
-    }
-    return c;
-  };
+}) {
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const container = containerRef.current;
-    const canvas = canvasRef.current;
-    if (!container || !canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    if (!container) return;
 
-    type Star = {
-      x: number;
-      y: number;
-      z: number;
-      px: number;
-      py: number;
-      seed: number;
-      vmul: number;
-      colorIdx: number;
-      flashUntil: number;
-      nextFlash: number;
-    };
+    const renderer = new Renderer({
+      dpr: Math.min(window.devicePixelRatio || 1, 2),
+      alpha: true,
+      premultipliedAlpha: false,
+    });
+    const gl = renderer.gl;
+    container.appendChild(gl.canvas);
 
-    const stars: Star[] = [];
-    let elapsed = 0;
-    let lastT = performance.now();
+    const camera = new Camera(gl, { near: 0.1, far: 100 });
+    camera.position.set(0, 0, 3);
 
-    const cfg = () => {
-      const p = propsRef.current;
-      const speed = p.speed ?? COMPONENT_DEFAULTS.speed;
-      const focalDepth = p.focalDepth ?? COMPONENT_DEFAULTS.focalDepth;
-      const starSize = p.starSize ?? COMPONENT_DEFAULTS.starSize;
-      const turbulence = p.turbulence ?? COMPONENT_DEFAULTS.turbulence;
-      const glitterIntensity = p.glitterIntensity ?? COMPONENT_DEFAULTS.glitterIntensity;
-      const brightness = p.brightness ?? COMPONENT_DEFAULTS.brightness;
-      const trailAmount = p.trailAmount ?? COMPONENT_DEFAULTS.trailAmount;
-
-      return {
-        reverse: p.reverse ?? COMPONENT_DEFAULTS.reverse,
-        density: p.density ?? COMPONENT_DEFAULTS.density,
-        stepZ: speed * 0.0008,
-        focalDepth: focalDepth / 100,
-        starScale: starSize * 0.15,
-        turbulence: turbulence * 0.2,
-        glitter: glitterIntensity * 0.1,
-        brightness: Math.min(1, brightness / 100),
-        trail: trailAmount / 100,
-      };
-    };
-
-    const resetStar = (s: Star, initial = false) => {
-      const { density, reverse, focalDepth, glitter } = cfg();
-      const angle = Math.random() * Math.PI * 2;
-      const radius = (0.2 + Math.random() * 0.8) * (density / 15);
-      s.x = Math.cos(angle) * radius;
-      s.y = Math.sin(angle) * radius;
-
-      if (reverse) {
-        s.z = initial
-          ? focalDepth + Math.random() * (1 - focalDepth)
-          : focalDepth;
-      } else {
-        s.z = initial ? Math.random() : 1.0;
-      }
-      s.px = NaN;
-      s.py = NaN;
-      s.seed = Math.random() * 1000;
-      s.vmul = 0.6 + Math.random() * 0.8;
-      s.colorIdx = Math.floor(Math.random() * 3);
-      s.flashUntil = 0;
-      s.nextFlash =
-        elapsed + 1 + Math.random() * 4 * (1 / Math.max(0.0001, glitter));
-    };
-
-    const makeStar = (): Star => ({
-      x: 0,
-      y: 0,
-      z: 0,
-      px: NaN,
-      py: NaN,
-      seed: 0,
-      vmul: 1,
-      colorIdx: 0,
-      flashUntil: 0,
-      nextFlash: 0,
+    const perlinProgram = new Program(gl, {
+      vertex: perlinVertexShader,
+      fragment: perlinFragmentShader,
+      uniforms: {
+        uTime: { value: 0 },
+        uFrequency: { value: mapLinear(frequency, 1, 10, 0.3, 6) },
+        uSpeed: { value: speed * 0.05 },
+        uValue: { value: 1 },
+        uResolution: { value: [gl.canvas.width, gl.canvas.height] },
+      },
     });
 
-    const syncCount = () => {
-      const count = Math.max(
-        1,
-        Math.floor(propsRef.current.particleCount ?? COMPONENT_DEFAULTS.particleCount)
-      );
-      if (stars.length === count) return;
-      if (stars.length > count) {
-        stars.length = count;
+    const perlinMesh = new Mesh(gl, {
+      geometry: new Plane(gl, { width: 2, height: 2 }),
+      program: perlinProgram,
+    });
+
+    const renderTarget = new OglRenderTarget(gl);
+
+    const rgb: [number, number, number][] = [];
+    const alpha: number[] = [];
+    for (let i = 0; i < MAX_COLORS; i++) {
+      if (colors[i]) {
+        const c = parseColorToRgba(colors[i]);
+        rgb.push([c.r, c.g, c.b]);
+        alpha.push(c.a);
       } else {
-        while (stars.length < count) {
-          const s = makeStar();
-          resetStar(s, true);
-          stars.push(s);
-        }
+        rgb.push([0, 0, 0]);
+        alpha.push(0);
       }
-    };
-
-    const resize = (entry?: ResizeObserverEntry) => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const cr = entry?.contentRect;
-      const rectW =
-        cr?.width ||
-        container.clientWidth ||
-        container.getBoundingClientRect().width;
-      const rectH =
-        cr?.height ||
-        container.clientHeight ||
-        container.getBoundingClientRect().height;
-      const w = Math.max(1, Math.floor(rectW) || 600);
-      const h = Math.max(1, Math.floor(rectH) || 400);
-
-      const prev = sizeRef.current;
-      if (prev.w === w && prev.h === h && prev.dpr === dpr) return;
-
-      sizeRef.current = { w, h, dpr };
-      canvas.width = Math.floor(w * dpr);
-      canvas.height = Math.floor(h * dpr);
-      canvas.style.width = `${w}px`;
-      canvas.style.height = `${h}px`;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-      ctx.clearRect(0, 0, w, h);
-    };
-
-    syncCount();
-    resize();
-
-    const ro = new ResizeObserver((entries) => resize(entries[0]));
-    ro.observe(container);
-
-    const drawFrame = (deltaSec: number) => {
-      const {
-        reverse,
-        stepZ,
-        focalDepth,
-        starScale,
-        turbulence,
-        glitter,
-        brightness,
-        trail,
-      } = cfg();
-
-      syncCount();
-      const colors = getCachedColors();
-      const palette: [number, number, number, number][] = [
-        colors.parsed1,
-        colors.parsed2,
-        colors.parsed3,
-      ];
-      const rgbStrs = [
-        `rgb(${palette[0][0]}, ${palette[0][1]}, ${palette[0][2]})`,
-        `rgb(${palette[1][0]}, ${palette[1][1]}, ${palette[1][2]})`,
-        `rgb(${palette[2][0]}, ${palette[2][1]}, ${palette[2][2]})`,
-      ];
-
-      const { w, h } = sizeRef.current;
-      const cx = w / 2;
-      const cy = h / 2;
-      const projScale = Math.min(w, h) * 0.9;
-
-      const dt = Math.max(0.001, Math.min(0.1, deltaSec)) * 60;
-
-      const keep = Math.pow(Math.min(0.98, Math.max(0, trail)), dt);
-      const trailAlpha = Math.max(0.02, 1 - keep);
-      ctx.globalAlpha = 1;
-      ctx.globalCompositeOperation = "destination-out";
-      ctx.fillStyle = `rgba(0, 0, 0, ${trailAlpha})`;
-      ctx.fillRect(0, 0, w, h);
-
-      ctx.globalCompositeOperation = "lighter";
-
-      for (let i = 0; i < stars.length; i++) {
-        const s = stars[i];
-
-        const vz = stepZ * s.vmul * dt;
-        if (reverse) {
-          s.z += vz;
-          if (s.z >= 1.0) {
-            resetStar(s);
-            continue;
-          }
-        } else {
-          s.z -= vz;
-          if (s.z <= focalDepth) {
-            resetStar(s);
-            continue;
-          }
-        }
-
-        let tx = s.x;
-        let ty = s.y;
-        if (turbulence > 0) {
-          const t = elapsed * 1.2 + s.seed;
-          const amp = turbulence * (1 - s.z) * 0.25;
-          tx += Math.sin(t + s.seed) * amp;
-          ty += Math.cos(t * 1.13 + s.seed * 0.7) * amp;
-        }
-
-        const persp = focalDepth / Math.max(s.z, 0.0001);
-        const sx = cx + tx * persp * projScale;
-        const sy = cy + ty * persp * projScale;
-
-        if (
-          !reverse &&
-          (sx < -20 || sx > w + 20 || sy < -20 || sy > h + 20)
-        ) {
-          resetStar(s);
-          continue;
-        }
-
-        let flashMult = 1;
-        if (glitter > 0) {
-          if (elapsed >= s.nextFlash && s.flashUntil < elapsed) {
-            s.flashUntil = elapsed + 0.04 + Math.random() * 0.07;
-            s.nextFlash =
-              elapsed +
-              1 +
-              Math.random() * 4 * (1 / Math.max(0.0001, glitter));
-          }
-          if (elapsed <= s.flashUntil) {
-            flashMult = 1 + 2.5 * glitter;
-          }
-        }
-
-        const sizePersp = Math.min(
-          2.5,
-          (focalDepth / Math.max(s.z, 0.0001)) * 0.6
-        );
-        const baseR = Math.max(0.25, starScale * (0.4 + sizePersp));
-        const maxR = 1 + starScale * 2.5;
-        const r = Math.min(baseR * flashMult, maxR);
-
-        const lifeT = reverse ? s.z : 1 - s.z;
-        const fadeIn = reverse
-          ? Math.min(1, (s.z - focalDepth) / (1 - focalDepth) / 0.12)
-          : 1;
-        const a =
-          Math.min(
-            1,
-            reverse ? 0.85 - lifeT * 0.6 : lifeT * 0.9 + 0.05
-          ) *
-          fadeIn *
-          brightness *
-          (flashMult > 1 ? 1 : 0.85);
-
-        const colStr = rgbStrs[s.colorIdx];
-
-        if (!Number.isNaN(s.px) && !Number.isNaN(s.py)) {
-          ctx.globalAlpha = a * 0.5;
-          ctx.strokeStyle = colStr;
-          ctx.lineWidth = Math.max(0.4, r * 0.4);
-          ctx.beginPath();
-          ctx.moveTo(s.px, s.py);
-          ctx.lineTo(sx, sy);
-          ctx.stroke();
-        }
-
-        ctx.globalAlpha = a;
-        ctx.fillStyle = colStr;
-        ctx.fillRect(sx - r, sy - r, r * 2, r * 2);
-
-        if (flashMult > 1) {
-          const rf = Math.min(r * 1.4, maxR * 1.4);
-          ctx.globalAlpha = a * 0.5;
-          ctx.fillRect(sx - rf, sy - rf, rf * 2, rf * 2);
-        }
-
-        s.px = sx;
-        s.py = sy;
-      }
-
-      ctx.globalAlpha = 1;
-      ctx.globalCompositeOperation = "source-over";
-      elapsed += Math.min(0.1, Math.max(0, deltaSec));
-    };
-
-    if (isStatic) {
-      for (let i = 0; i < 80; i++) drawFrame(1 / 60);
-      return () => {
-        ro.disconnect();
-      };
     }
 
-    const loop = (t: number) => {
-      const deltaSec = (t - lastT) / 1000;
-      lastT = t;
-      drawFrame(deltaSec);
-      rafRef.current = requestAnimationFrame(loop);
+    const dotProgram = new Program(gl, {
+      vertex: dotVertexShader,
+      fragment: dotFragmentShader,
+      uniforms: {
+        uResolution: { value: [gl.canvas.width, gl.canvas.height] },
+        uTexture: { value: renderTarget.texture },
+        uPaletteCount: { value: Math.min(MAX_COLORS, Math.max(1, colors.length)) },
+        uPalette: { value: rgb },
+        uPaletteAlpha: { value: alpha },
+        uCellSize: { value: mapLinear(cellSize, 1, 100, 6, 60) },
+        uGamma: { value: mapLinear(gamma, 1, 20, 0.5, 8) },
+        uPaletteBias: { value: paletteBias * 0.05 },
+      },
+    });
+
+    const dotMesh = new Mesh(gl, {
+      geometry: new Plane(gl, { width: 2, height: 2 }),
+      program: dotProgram,
+    });
+
+    const resize = () => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      renderer.setSize(w, h);
+      camera.perspective({ aspect: gl.canvas.width / gl.canvas.height });
+      renderTarget.setSize(gl.canvas.width, gl.canvas.height);
+      perlinProgram.uniforms.uResolution.value = [gl.canvas.width, gl.canvas.height];
+      dotProgram.uniforms.uResolution.value = [gl.canvas.width, gl.canvas.height];
     };
-    rafRef.current = requestAnimationFrame(loop);
+
+    window.addEventListener("resize", resize);
+    resize();
+
+    let rafId: number;
+    const update = (time: number) => {
+      perlinProgram.uniforms.uTime.value = time * 0.001;
+      renderer.render({ scene: perlinMesh, camera, target: renderTarget });
+      renderer.render({ scene: dotMesh, camera });
+      rafId = requestAnimationFrame(update);
+    };
+    rafId = requestAnimationFrame(update);
 
     return () => {
-      if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
-      ro.disconnect();
+      cancelAnimationFrame(rafId);
+      window.removeEventListener("resize", resize);
+      if (gl.canvas.parentElement === container) {
+        container.removeChild(gl.canvas);
+      }
     };
-  }, [isStatic]);
+  }, [frequency, speed, colors, cellSize, gamma, paletteBias]);
 
   return (
     <div
-      ref={containerRef}
       style={{
         position: "fixed",
         inset: 0,
         width: "100vw",
         height: "100vh",
+        background: bgColor,
         pointerEvents: "none",
         zIndex: 0,
         overflow: "hidden",
         ...style,
       }}
     >
-      <canvas
-        ref={canvasRef}
-        style={{
-          position: "absolute",
-          inset: 0,
-          width: "100%",
-          height: "100%",
-          display: "block",
-        }}
-      />
+      <div ref={containerRef} style={{ position: "absolute", inset: 0 }} />
     </div>
   );
-}
-
-export default function GlitterWrap(props: Props) {
-  return <OriginkitBaseGlitterWrap {...props} />;
 }
