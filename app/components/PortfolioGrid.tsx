@@ -28,12 +28,12 @@ export default function PortfolioGrid() {
         </div>
       </div>
 
-      {/* Temporary Maintenance Card */}
+      {/* Rounded Maintenance Card */}
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true }}
-        className="glass-card p-12 flex flex-col items-center justify-center text-center min-h-[320px] max-w-2xl mx-auto border border-amber-500/30 bg-amber-500/5"
+        className="glass-card rounded-3xl p-10 sm:p-14 flex flex-col items-center justify-center text-center min-h-[300px] max-w-2xl mx-auto border border-amber-500/30 bg-amber-500/5 shadow-2xl"
       >
         <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 mb-6 shadow-lg shadow-amber-500/5">
           <AlertTriangle size={32} />
@@ -44,7 +44,7 @@ export default function PortfolioGrid() {
         </h3>
         
         <p className="text-zinc-400 text-base max-w-md font-light leading-relaxed">
-          Sorry! Arya is currently busy curating and updating the project showcase. Check back soon for new case studies and visual works.
+          Sorry! Arya is currently busy updating the project showcase. Check back soon!
         </p>
       </motion.div>
     </section>
