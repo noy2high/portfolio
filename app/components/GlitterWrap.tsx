@@ -10,7 +10,7 @@ const RenderTarget = {
   preview: "preview",
 };
 
-function parseColor(input: string): [number, number, number, number] {
+function parseColor(input?: string): [number, number, number, number] {
   if (!input) return [255, 255, 255, 1];
   const s = input.trim();
   if (s.startsWith("#")) {
@@ -51,26 +51,24 @@ type Props = {
   style?: CSSProperties;
 };
 
-const COMPONENT_DEFAULTS: Required<Props> = {
+const COMPONENT_DEFAULTS = {
   particleCount: 500,
-  color1: "#ffffff",
-  color2: "#FF0000",
+  color1: "#F078FF",
+  color2: "#FFFC9B",
   color3: "#FFE500",
-  speed: 5,
-  density: 100,
-  starSize: 20,
-  focalDepth: 13,
-  turbulence: 0,
-  brightness: 100,
-  glitterIntensity: 3,
-  trailAmount: 100,
+  speed: 1,
+  density: 54,
+  starSize: 6,
+  focalDepth: 5,
+  turbulence: 3,
+  brightness: 37,
+  glitterIntensity: 4,
+  trailAmount: 60,
   reverse: false,
-  style: {},
 };
 
-function OriginkitBaseGlitterWrap(props: Props) {
-  props = { ...COMPONENT_DEFAULTS, ...props };
-  const { style } = props;
+function OriginkitBaseGlitterWrap(userProps: Props) {
+  const style = userProps.style;
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -82,8 +80,8 @@ function OriginkitBaseGlitterWrap(props: Props) {
     renderTarget === RenderTarget.export ||
     renderTarget === RenderTarget.thumbnail;
 
-  const propsRef = useRef(props);
-  propsRef.current = props;
+  const propsRef = useRef(userProps);
+  propsRef.current = userProps;
 
   const colorCacheRef = useRef({
     color1: "",
@@ -97,17 +95,21 @@ function OriginkitBaseGlitterWrap(props: Props) {
   const getCachedColors = () => {
     const p = propsRef.current;
     const c = colorCacheRef.current;
-    if (p.color1 !== c.color1) {
-      c.color1 = p.color1;
-      c.parsed1 = parseColor(p.color1);
+    const c1 = p.color1 ?? COMPONENT_DEFAULTS.color1;
+    const c2 = p.color2 ?? COMPONENT_DEFAULTS.color2;
+    const c3 = p.color3 ?? COMPONENT_DEFAULTS.color3;
+
+    if (c1 !== c.color1) {
+      c.color1 = c1;
+      c.parsed1 = parseColor(c1);
     }
-    if (p.color2 !== c.color2) {
-      c.color2 = p.color2;
-      c.parsed2 = parseColor(p.color2);
+    if (c2 !== c.color2) {
+      c.color2 = c2;
+      c.parsed2 = parseColor(c2);
     }
-    if (p.color3 !== c.color3) {
-      c.color3 = p.color3;
-      c.parsed3 = parseColor(p.color3);
+    if (c3 !== c.color3) {
+      c.color3 = c3;
+      c.parsed3 = parseColor(c3);
     }
     return c;
   };
@@ -138,16 +140,24 @@ function OriginkitBaseGlitterWrap(props: Props) {
 
     const cfg = () => {
       const p = propsRef.current;
+      const speed = p.speed ?? COMPONENT_DEFAULTS.speed;
+      const focalDepth = p.focalDepth ?? COMPONENT_DEFAULTS.focalDepth;
+      const starSize = p.starSize ?? COMPONENT_DEFAULTS.starSize;
+      const turbulence = p.turbulence ?? COMPONENT_DEFAULTS.turbulence;
+      const glitterIntensity = p.glitterIntensity ?? COMPONENT_DEFAULTS.glitterIntensity;
+      const brightness = p.brightness ?? COMPONENT_DEFAULTS.brightness;
+      const trailAmount = p.trailAmount ?? COMPONENT_DEFAULTS.trailAmount;
+
       return {
-        reverse: p.reverse,
-        density: p.density,
-        stepZ: p.speed * 0.0008,
-        focalDepth: p.focalDepth / 100,
-        starScale: p.starSize * 0.15,
-        turbulence: p.turbulence * 0.2,
-        glitter: p.glitterIntensity * 0.1,
-        brightness: Math.min(1, p.brightness / 100),
-        trail: p.trailAmount / 100,
+        reverse: p.reverse ?? COMPONENT_DEFAULTS.reverse,
+        density: p.density ?? COMPONENT_DEFAULTS.density,
+        stepZ: speed * 0.0008,
+        focalDepth: focalDepth / 100,
+        starScale: starSize * 0.15,
+        turbulence: turbulence * 0.2,
+        glitter: glitterIntensity * 0.1,
+        brightness: Math.min(1, brightness / 100),
+        trail: trailAmount / 100,
       };
     };
 
@@ -191,7 +201,7 @@ function OriginkitBaseGlitterWrap(props: Props) {
     const syncCount = () => {
       const count = Math.max(
         1,
-        Math.floor(propsRef.current.particleCount)
+        Math.floor(propsRef.current.particleCount ?? COMPONENT_DEFAULTS.particleCount)
       );
       if (stars.length === count) return;
       if (stars.length > count) {
@@ -433,23 +443,6 @@ function OriginkitBaseGlitterWrap(props: Props) {
   );
 }
 
-const originkitPresetProps = {
-  color1: "#F078FF",
-  color2: "#FFFC9B",
-  speed: 1,
-  density: 54,
-  starSize: 6,
-  focalDepth: 5,
-  brightness: 37,
-  glitterIntensity: 4,
-  trailAmount: 60,
-};
-
-export default function GlitterWrap(props: Record<string, unknown>) {
-  return (
-    <OriginkitBaseGlitterWrap
-      {...(originkitPresetProps as Record<string, unknown>)}
-      {...props}
-    />
-  );
+export default function GlitterWrap(props: Props) {
+  return <OriginkitBaseGlitterWrap {...props} />;
 }
