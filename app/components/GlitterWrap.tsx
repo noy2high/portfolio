@@ -2,6 +2,14 @@
 
 import { CSSProperties, useEffect, useRef } from "react";
 
+const RenderTarget = {
+  current: () => "preview",
+  canvas: "canvas",
+  export: "export",
+  thumbnail: "thumbnail",
+  preview: "preview",
+};
+
 function parseColor(input: string): [number, number, number, number] {
   if (!input) return [255, 255, 255, 1];
   const s = input.trim();
@@ -45,27 +53,34 @@ type Props = {
 
 const COMPONENT_DEFAULTS: Required<Props> = {
   particleCount: 500,
-  color1: "#F078FF",
-  color2: "#FFFC9B",
+  color1: "#ffffff",
+  color2: "#FF0000",
   color3: "#FFE500",
-  speed: 4,
-  density: 59,
-  starSize: 6,
-  focalDepth: 5,
-  turbulence: 3,
+  speed: 5,
+  density: 100,
+  starSize: 20,
+  focalDepth: 13,
+  turbulence: 0,
   brightness: 100,
-  glitterIntensity: 4,
-  trailAmount: 60,
+  glitterIntensity: 3,
+  trailAmount: 100,
   reverse: false,
   style: {},
 };
 
-export default function GlitterWrap(userProps: Props) {
-  const props = { ...COMPONENT_DEFAULTS, ...userProps };
+function OriginkitBaseGlitterWrap(props: Props) {
+  props = { ...COMPONENT_DEFAULTS, ...props };
+  const { style } = props;
+
   const containerRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const rafRef = useRef<number | null>(null);
   const sizeRef = useRef({ w: 0, h: 0, dpr: 1 });
+
+  const renderTarget = RenderTarget.current();
+  const isStatic =
+    renderTarget === RenderTarget.export ||
+    renderTarget === RenderTarget.thumbnail;
 
   const propsRef = useRef(props);
   propsRef.current = props;
@@ -144,7 +159,9 @@ export default function GlitterWrap(userProps: Props) {
       s.y = Math.sin(angle) * radius;
 
       if (reverse) {
-        s.z = initial ? focalDepth + Math.random() * (1 - focalDepth) : focalDepth;
+        s.z = initial
+          ? focalDepth + Math.random() * (1 - focalDepth)
+          : focalDepth;
       } else {
         s.z = initial ? Math.random() : 1.0;
       }
@@ -154,7 +171,8 @@ export default function GlitterWrap(userProps: Props) {
       s.vmul = 0.6 + Math.random() * 0.8;
       s.colorIdx = Math.floor(Math.random() * 3);
       s.flashUntil = 0;
-      s.nextFlash = elapsed + 1 + Math.random() * 4 * (1 / Math.max(0.0001, glitter));
+      s.nextFlash =
+        elapsed + 1 + Math.random() * 4 * (1 / Math.max(0.0001, glitter));
     };
 
     const makeStar = (): Star => ({
@@ -171,7 +189,10 @@ export default function GlitterWrap(userProps: Props) {
     });
 
     const syncCount = () => {
-      const count = Math.max(1, Math.floor(propsRef.current.particleCount));
+      const count = Math.max(
+        1,
+        Math.floor(propsRef.current.particleCount)
+      );
       if (stars.length === count) return;
       if (stars.length > count) {
         stars.length = count;
@@ -187,8 +208,14 @@ export default function GlitterWrap(userProps: Props) {
     const resize = (entry?: ResizeObserverEntry) => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const cr = entry?.contentRect;
-      const rectW = cr?.width || container.clientWidth || container.getBoundingClientRect().width;
-      const rectH = cr?.height || container.clientHeight || container.getBoundingClientRect().height;
+      const rectW =
+        cr?.width ||
+        container.clientWidth ||
+        container.getBoundingClientRect().width;
+      const rectH =
+        cr?.height ||
+        container.clientHeight ||
+        container.getBoundingClientRect().height;
       const w = Math.max(1, Math.floor(rectW) || 600);
       const h = Math.max(1, Math.floor(rectH) || 400);
 
@@ -201,6 +228,7 @@ export default function GlitterWrap(userProps: Props) {
       canvas.style.width = `${w}px`;
       canvas.style.height = `${h}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
       ctx.clearRect(0, 0, w, h);
     };
 
@@ -211,11 +239,24 @@ export default function GlitterWrap(userProps: Props) {
     ro.observe(container);
 
     const drawFrame = (deltaSec: number) => {
-      const { reverse, stepZ, focalDepth, starScale, turbulence, glitter, brightness, trail } = cfg();
+      const {
+        reverse,
+        stepZ,
+        focalDepth,
+        starScale,
+        turbulence,
+        glitter,
+        brightness,
+        trail,
+      } = cfg();
 
       syncCount();
       const colors = getCachedColors();
-      const palette = [colors.parsed1, colors.parsed2, colors.parsed3];
+      const palette: [number, number, number, number][] = [
+        colors.parsed1,
+        colors.parsed2,
+        colors.parsed3,
+      ];
       const rgbStrs = [
         `rgb(${palette[0][0]}, ${palette[0][1]}, ${palette[0][2]})`,
         `rgb(${palette[1][0]}, ${palette[1][1]}, ${palette[1][2]})`,
@@ -226,6 +267,7 @@ export default function GlitterWrap(userProps: Props) {
       const cx = w / 2;
       const cy = h / 2;
       const projScale = Math.min(w, h) * 0.9;
+
       const dt = Math.max(0.001, Math.min(0.1, deltaSec)) * 60;
 
       const keep = Math.pow(Math.min(0.98, Math.max(0, trail)), dt);
@@ -239,8 +281,8 @@ export default function GlitterWrap(userProps: Props) {
 
       for (let i = 0; i < stars.length; i++) {
         const s = stars[i];
-        const vz = stepZ * s.vmul * dt;
 
+        const vz = stepZ * s.vmul * dt;
         if (reverse) {
           s.z += vz;
           if (s.z >= 1.0) {
@@ -268,7 +310,10 @@ export default function GlitterWrap(userProps: Props) {
         const sx = cx + tx * persp * projScale;
         const sy = cy + ty * persp * projScale;
 
-        if (!reverse && (sx < -20 || sx > w + 20 || sy < -20 || sy > h + 20)) {
+        if (
+          !reverse &&
+          (sx < -20 || sx > w + 20 || sy < -20 || sy > h + 20)
+        ) {
           resetStar(s);
           continue;
         }
@@ -277,21 +322,36 @@ export default function GlitterWrap(userProps: Props) {
         if (glitter > 0) {
           if (elapsed >= s.nextFlash && s.flashUntil < elapsed) {
             s.flashUntil = elapsed + 0.04 + Math.random() * 0.07;
-            s.nextFlash = elapsed + 1 + Math.random() * 4 * (1 / Math.max(0.0001, glitter));
+            s.nextFlash =
+              elapsed +
+              1 +
+              Math.random() * 4 * (1 / Math.max(0.0001, glitter));
           }
           if (elapsed <= s.flashUntil) {
             flashMult = 1 + 2.5 * glitter;
           }
         }
 
-        const sizePersp = Math.min(2.5, (focalDepth / Math.max(s.z, 0.0001)) * 0.6);
+        const sizePersp = Math.min(
+          2.5,
+          (focalDepth / Math.max(s.z, 0.0001)) * 0.6
+        );
         const baseR = Math.max(0.25, starScale * (0.4 + sizePersp));
         const maxR = 1 + starScale * 2.5;
         const r = Math.min(baseR * flashMult, maxR);
 
         const lifeT = reverse ? s.z : 1 - s.z;
-        const fadeIn = reverse ? Math.min(1, (s.z - focalDepth) / (1 - focalDepth) / 0.12) : 1;
-        const a = Math.min(1, reverse ? 0.85 - lifeT * 0.6 : lifeT * 0.9 + 0.05) * fadeIn * brightness * (flashMult > 1 ? 1 : 0.85);
+        const fadeIn = reverse
+          ? Math.min(1, (s.z - focalDepth) / (1 - focalDepth) / 0.12)
+          : 1;
+        const a =
+          Math.min(
+            1,
+            reverse ? 0.85 - lifeT * 0.6 : lifeT * 0.9 + 0.05
+          ) *
+          fadeIn *
+          brightness *
+          (flashMult > 1 ? 1 : 0.85);
 
         const colStr = rgbStrs[s.colorIdx];
 
@@ -324,6 +384,13 @@ export default function GlitterWrap(userProps: Props) {
       elapsed += Math.min(0.1, Math.max(0, deltaSec));
     };
 
+    if (isStatic) {
+      for (let i = 0; i < 80; i++) drawFrame(1 / 60);
+      return () => {
+        ro.disconnect();
+      };
+    }
+
     const loop = (t: number) => {
       const deltaSec = (t - lastT) / 1000;
       lastT = t;
@@ -336,7 +403,7 @@ export default function GlitterWrap(userProps: Props) {
       if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
       ro.disconnect();
     };
-  }, []);
+  }, [isStatic]);
 
   return (
     <div
@@ -349,7 +416,7 @@ export default function GlitterWrap(userProps: Props) {
         pointerEvents: "none",
         zIndex: 0,
         overflow: "hidden",
-        ...props.style,
+        ...style,
       }}
     >
       <canvas
@@ -363,5 +430,26 @@ export default function GlitterWrap(userProps: Props) {
         }}
       />
     </div>
+  );
+}
+
+const originkitPresetProps = {
+  color1: "#F078FF",
+  color2: "#FFFC9B",
+  speed: 1,
+  density: 54,
+  starSize: 6,
+  focalDepth: 5,
+  brightness: 37,
+  glitterIntensity: 4,
+  trailAmount: 60,
+};
+
+export default function GlitterWrap(props: Record<string, unknown>) {
+  return (
+    <OriginkitBaseGlitterWrap
+      {...(originkitPresetProps as Record<string, unknown>)}
+      {...props}
+    />
   );
 }
