@@ -1,13 +1,25 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Playfair_Display, Great_Vibes } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "./components/SmoothScroll";
 
 const inter = Inter({ subsets: ["latin"] });
 
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["700", "900"],
+  variable: "--font-playfair",
+});
+
+const vibes = Great_Vibes({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-vibes",
+});
+
 export const metadata: Metadata = {
-  title: "Portfolio | Creative Design & Video",
-  description: "Graphic design and video editing portfolio showcase.",
+  title: "ARYA — Portfolio",
+  description: "Visuals, Motion & Creative Showcase",
 };
 
 export default function RootLayout({
@@ -16,9 +28,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
-      <body className={`${inter.className} bg-zinc-950 text-zinc-100 antialiased`}>
-        <SmoothScroll>{children}</SmoothScroll>
+    <html lang="en" className={`${playfair.variable} ${vibes.variable}`}>
+      <body className={inter.className}>
+        <SmoothScroll />
+        {children}
       </body>
     </html>
   );
