@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowUpRight, Play, Sparkles, Film, Palette } from "lucide-react";
+import { ArrowUpRight, Play } from "lucide-react";
 import PortfolioGrid from "./components/PortfolioGrid";
 import Experience from "./components/Experience";
 import Footer from "./components/Footer";
@@ -33,39 +33,33 @@ export default function Home() {
 
       {/* Main Hero Content */}
       <div className="my-auto py-20 z-10 max-w-5xl mx-auto w-full">
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-900 border border-zinc-800 text-xs text-zinc-400 mb-8"
-        >
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span>Available for Projects & Freelance</span>
-        </motion.div>
 
+        {/* Animated Title */}
         <motion.h1 
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
           className="text-5xl md:text-8xl font-extrabold tracking-tight leading-[1.05] mb-8"
         >
           Crafting <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-amber-400">visuals</span> & dynamic motion.
         </motion.h1>
 
+        {/* Custom About Text */}
         <motion.p 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="text-lg md:text-xl text-zinc-400 max-w-2xl font-light mb-12"
+          transition={{ duration: 0.8, delay: 0.3 }}
+          className="text-lg md:text-xl text-zinc-300 max-w-3xl font-light leading-relaxed mb-12"
         >
-          Specializing in high-impact graphic design, video editing, and motion visuals. Turning raw ideas into polished visual experiences.
+          Resourceful, intuitive, and built for collaboration. I’m someone who naturally balances creative thinking with solid discipline. Rather than staying in a single lane, I bring a fast learning curve and strong execution to whatever initiative I tackle. From administrative work to hands-on projects, I focus on clear communication, dynamic teamwork, and delivering polished results.
         </motion.p>
 
+        {/* Interactive Action Buttons */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-          className="flex flex-wrap gap-4 items-center"
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="flex flex-wrap gap-4 items-center mb-16"
         >
           <motion.a
             whileHover={{ scale: 1.03 }}
@@ -88,26 +82,6 @@ export default function Home() {
           </motion.a>
         </motion.div>
       </div>
-
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1, delay: 0.7 }}
-        className="grid grid-cols-2 md:grid-cols-3 gap-6 pt-8 border-t border-zinc-900 z-10 text-xs md:text-sm text-zinc-500 mb-20 max-w-5xl mx-auto w-full"
-      >
-        <div className="flex items-center gap-2">
-          <Palette size={16} className="text-purple-400" />
-          <span>Graphic Design & Branding</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <Film size={16} className="text-pink-400" />
-          <span>Video Editing & Motion</span>
-        </div>
-        <div className="flex items-center gap-2 col-span-2 md:col-span-1">
-          <Sparkles size={16} className="text-amber-400" />
-          <span>High-FPS Interaction</span>
-        </div>
-      </motion.div>
 
       {/* Sections */}
       <PortfolioGrid />
