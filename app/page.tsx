@@ -37,22 +37,22 @@ export default function Home() {
       </motion.header>
 
       {/* Main Hero Content */}
-      <div className="my-auto py-12 z-10 max-w-5xl mx-auto w-full relative">
+      <div className="my-auto pt-16 pb-12 z-10 max-w-5xl mx-auto w-full relative flex flex-col items-start text-left">
 
-        {/* Hero Title Image Replacement */}
+        {/* Compact, Left-Aligned Image Header */}
         <motion.div 
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="relative w-full max-w-2xl h-auto mb-8"
+          className="relative w-48 sm:w-64 h-auto mb-4"
         >
           <Image
             src="/Port.png"
-            alt="Portfolio"
-            width={700}
-            height={250}
+            alt="Portfolio Header"
+            width={320}
+            height={100}
             priority
-            className="w-full h-auto object-contain drop-shadow-[0_10px_20px_rgba(255,255,255,0.15)]"
+            className="w-full h-auto object-contain drop-shadow-[0_4px_12px_rgba(255,255,255,0.1)]"
           />
         </motion.div>
 
@@ -61,7 +61,7 @@ export default function Home() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="text-lg md:text-xl text-zinc-300 max-w-3xl font-light leading-relaxed mb-12"
+          className="text-lg md:text-xl text-zinc-300 max-w-3xl font-light leading-relaxed mb-10"
         >
           Resourceful, intuitive, and built for collaboration. I’m someone who naturally balances creative thinking with solid discipline. Rather than staying in a single lane, I bring a fast learning curve and strong execution to whatever initiative I tackle. From administrative work to hands-on projects, I focus on clear communication, dynamic teamwork, and delivering polished results.
         </motion.p>
