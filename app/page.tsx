@@ -17,7 +17,6 @@ const NAV_ITEMS = [
 export default function Home() {
   const [activeTab, setActiveTab] = useState("About");
 
-  // Scroll spy to switch active tab pill automatically while scrolling
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY + 200;
@@ -57,7 +56,7 @@ export default function Home() {
             ARYA<span className="text-purple-500">.</span>
           </a>
 
-          {/* Interactive Sliding Pill Navigation Container */}
+          {/* Glitch-Free Sliding Pill Navigation */}
           <nav className="flex gap-1 p-1 bg-zinc-900/80 border border-zinc-800/80 rounded-full backdrop-blur-md">
             {NAV_ITEMS.map((item) => (
               <a
@@ -74,7 +73,7 @@ export default function Home() {
                   <motion.div
                     layoutId="activeNavPill"
                     className="absolute inset-0 bg-white rounded-full"
-                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                    transition={{ ease: "easeInOut", duration: 0.25 }}
                   />
                 )}
                 <span className="relative z-10">{item.name}</span>
@@ -97,17 +96,17 @@ export default function Home() {
           // Introduction
         </motion.span>
 
-        {/* Perfectly Centered Glassmorphism Header Badge */}
+        {/* Perfectly Proportioned Header Badge */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="glass-badge px-8 sm:px-12 py-3 sm:py-4 mb-8 flex items-center justify-center gap-1 shadow-2xl select-none"
+          className="glass-badge px-8 sm:px-12 py-3 sm:py-4 mb-8 flex items-baseline justify-center gap-1.5 shadow-2xl select-none"
         >
           <span className="font-playfair font-black text-4xl sm:text-6xl md:text-7xl text-white tracking-tight leading-none inline-block">
             Port
           </span>
-          <span className="font-playfair italic font-normal text-3.5xl sm:text-5.5xl md:text-6.5xl text-zinc-200 leading-none inline-block transform translate-y-[1px]">
+          <span className="font-playfair italic font-bold text-4xl sm:text-6xl md:text-7xl text-zinc-100 leading-none inline-block">
             folio
           </span>
         </motion.div>
