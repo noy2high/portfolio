@@ -39,10 +39,38 @@ export default function Home() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Slower, smooth programmatic scroll calculation
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string, name: string) => {
+    e.preventDefault();
+    setActiveTab(name);
+    const targetId = href.replace("#", "");
+    const targetElement = document.getElementById(targetId);
+
+    if (targetElement) {
+      const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - 100;
+      const startPosition = window.pageYOffset;
+      const distance = targetPosition - startPosition;
+      const duration = 1200; // Slower glide (1.2 seconds)
+      let start: number | null = null;
+
+      const step = (timestamp: number) => {
+        if (!start) start = timestamp;
+        const progress = timestamp - start;
+        const ease = (t: number) => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t; // Ease in-out
+        window.scrollTo(0, startPosition + distance * ease(Math.min(progress / duration, 1)));
+        if (progress < duration) {
+          window.requestAnimationFrame(step);
+        }
+      };
+
+      window.requestAnimationFrame(step);
+    }
+  };
+
   return (
     <main className="relative min-h-screen bg-zinc-950 text-zinc-100 overflow-hidden flex flex-col justify-between p-5 sm:p-8 md:p-16 pt-24 sm:pt-28">
       
-      {/* Animated Starfield Tunnel Background */}
+      {/* Chromatic Waves Background */}
       <GlitterWrap />
 
       {/* Dynamic Background Glow FX */}
@@ -56,29 +84,25 @@ export default function Home() {
             ARYA<span className="text-purple-500">.</span>
           </a>
 
-          {/* Glitch-Free Sliding Pill Navigation */}
-          <nav className="flex gap-1 p-1 bg-zinc-900/80 border border-zinc-800/80 rounded-full backdrop-blur-md">
-            {NAV_ITEMS.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
-                onClick={() => setActiveTab(item.name)}
-                className={`relative px-4 sm:px-5 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-colors ${
-                  activeTab === item.name
-                    ? "text-zinc-950 font-semibold"
-                    : "text-zinc-400 hover:text-white"
-                }`}
-              >
-                {activeTab === item.name && (
-                  <motion.div
-                    layoutId="activeNavPill"
-                    className="absolute inset-0 bg-white rounded-full"
-                    transition={{ ease: "easeInOut", duration: 0.25 }}
-                  />
-                )}
-                <span className="relative z-10">{item.name}</span>
-              </a>
-            ))}
+          {/* Clean Outer Shell Navbar (Bold on Active) */}
+          <nav className="flex gap-2 sm:gap-4 p-1.5 px-3 bg-zinc-900/80 border border-zinc-800/80 rounded-full backdrop-blur-md">
+            {NAV_ITEMS.map((item) => {
+              const isActive = activeTab === item.name;
+              return (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  onClick={(e) => handleNavClick(e, item.href, item.name)}
+                  className={`px-3 sm:px-4 py-1 text-xs sm:text-sm transition-all ${
+                    isActive
+                      ? "text-white font-extrabold scale-105"
+                      : "text-zinc-400 font-normal hover:text-zinc-200"
+                  }`}
+                >
+                  {item.name}
+                </a>
+              );
+            })}
           </nav>
         </div>
       </header>
@@ -96,7 +120,7 @@ export default function Home() {
           // Introduction
         </motion.span>
 
-        {/* Perfectly Proportioned Header Badge */}
+        {/* Header Badge */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -128,25 +152,23 @@ export default function Home() {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="flex flex-wrap gap-3 sm:gap-4 items-center mb-16"
         >
-          <motion.a
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
+          <a
             href="#work"
+            onClick={(e) => handleNavClick(e, "#work", "Work")}
             className="flex items-center gap-2 px-5 sm:px-6 py-3 sm:py-3.5 bg-zinc-100 text-zinc-950 font-semibold text-xs sm:text-sm rounded-full hover:bg-white transition-all shadow-lg shadow-white/5"
           >
             <span>Explore Showcase</span>
             <ArrowUpRight size={16} />
-          </motion.a>
+          </a>
 
-          <motion.a
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
+          <a
             href="#contact"
+            onClick={(e) => handleNavClick(e, "#contact", "Contact")}
             className="flex items-center gap-2 px-5 sm:px-6 py-3 sm:py-3.5 bg-zinc-900 text-zinc-200 border border-zinc-800 font-medium text-xs sm:text-sm rounded-full hover:bg-zinc-800 hover:border-zinc-700 transition-all"
           >
             <Play size={15} className="fill-zinc-200" />
             <span>Get In Touch</span>
-          </motion.a>
+          </a>
         </motion.div>
       </div>
 
