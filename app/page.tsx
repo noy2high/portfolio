@@ -17,7 +17,6 @@ const NAV_ITEMS = [
 export default function Home() {
   const [activeTab, setActiveTab] = useState("About");
 
-  // Force scroll to top on initial page load / refresh
   useEffect(() => {
     if ("scrollRestoration" in history) {
       history.scrollRestoration = "manual";
@@ -75,7 +74,7 @@ export default function Home() {
   };
 
   return (
-    <main className="relative min-h-screen bg-zinc-950 text-zinc-100 overflow-hidden flex flex-col justify-between p-5 sm:p-8 md:p-16 pt-24 sm:pt-28">
+    <main className="relative min-h-screen bg-zinc-950 text-zinc-100 overflow-hidden flex flex-col justify-between pt-24 sm:pt-28">
       
       {/* Chromatic Waves Background */}
       <GlitterWrap />
@@ -85,7 +84,7 @@ export default function Home() {
       <div className="absolute bottom-10 right-10 w-[250px] sm:w-[400px] h-[250px] sm:h-[400px] bg-blue-600/10 blur-[140px] rounded-full pointer-events-none z-0" />
 
       {/* Sticky Navigation Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 px-5 sm:px-8 md:px-16 py-4 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-900/50">
+      <header className="fixed top-0 left-0 right-0 z-50 px-6 md:px-12 py-4 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-900/50">
         <div className="max-w-7xl mx-auto w-full flex justify-between items-center">
           <a href="#" className="text-xl font-bold tracking-tighter uppercase text-zinc-200">
             ARYA<span className="text-purple-500">.</span>
@@ -114,8 +113,8 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Main Hero Content */}
-      <div id="about-hero" className="my-auto pt-8 pb-12 z-10 max-w-5xl mx-auto w-full relative flex flex-col items-start text-left scroll-mt-32">
+      {/* Main Hero Content — Matched Width Container */}
+      <section id="about-hero" className="my-auto pt-8 pb-12 z-10 max-w-7xl mx-auto w-full px-6 md:px-12 relative flex flex-col items-start text-left scroll-mt-32">
 
         {/* Introduction Tag */}
         <motion.span 
@@ -142,12 +141,12 @@ export default function Home() {
           </span>
         </motion.div>
 
-        {/* Custom About Text */}
+        {/* Custom About Text — Stretched Across to Right Side */}
         <motion.p 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="text-base sm:text-lg md:text-xl text-zinc-300 max-w-3xl font-light leading-relaxed mb-10"
+          className="text-lg sm:text-xl md:text-2xl text-zinc-300 max-w-5xl font-light leading-relaxed mb-10"
         >
           Resourceful, intuitive, and built for collaboration. I’m someone who naturally balances creative thinking with solid discipline. Rather than staying in a single lane, I bring a fast learning curve and strong execution to whatever initiative I tackle. From administrative work to hands-on projects, I focus on clear communication, dynamic teamwork, and delivering polished results.
         </motion.p>
@@ -177,7 +176,7 @@ export default function Home() {
             <span>Get In Touch</span>
           </a>
         </motion.div>
-      </div>
+      </section>
 
       {/* Sections */}
       <PortfolioGrid />
