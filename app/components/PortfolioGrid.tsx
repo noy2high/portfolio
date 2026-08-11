@@ -4,29 +4,16 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, ExternalLink, X, Film } from "lucide-react";
 
-// Swap these sample URLs & IDs with your actual client post links!
 const PROJECTS = [
   {
     id: "project-1",
-    title: "Client Promo Motion Visual",
-    client: "Delfin Agency / Brand Client",
-    type: "tiktok",
-    // TikTok Embed Video ID (found in the TikTok video URL: tiktok.com/@user/video/VIDEO_ID)
-    embedId: "7312345678901234567",
-    directUrl: "https://www.tiktok.com",
-    tags: ["TikTok", "Video Editing", "VFX"],
-    desc: "Short-form promotional video focused on high-retention cuts and dynamic sound design.",
-  },
-  {
-    id: "project-2",
-    title: "Cinematic Reel Content",
-    client: "Digital Media Client",
+    title: "Client Visual Showcase",
+    client: "Instagram Reel Content",
     type: "instagram",
-    // Instagram Reel Code (found in the Instagram URL: instagram.com/reel/REEL_CODE/)
-    embedId: "C1234567890",
-    directUrl: "https://www.instagram.com",
-    tags: ["Instagram Reels", "Color Grading", "Motion"],
-    desc: "High-impact visual reel crafted for maximum social media engagement and brand reach.",
+    embedId: "DYCd6LHyXtT",
+    directUrl: "https://www.instagram.com/reel/DYCd6LHyXtT/",
+    tags: ["Instagram Reels", "Video Editing", "Motion"],
+    desc: "Short-form client visual content crafted for social engagement and high-impact motion aesthetics.",
   },
 ];
 
@@ -72,7 +59,7 @@ export default function PortfolioGrid() {
             <div className="flex justify-between items-center z-10">
               <span className="flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-950/80 border border-zinc-800 text-xs text-zinc-300 font-medium backdrop-blur-sm">
                 <Film size={14} className="text-purple-400" />
-                {project.type === "tiktok" ? "TikTok Embed" : "Instagram Reel"}
+                Instagram Reel
               </span>
 
               <div className="w-10 h-10 rounded-full bg-zinc-950/80 border border-zinc-800 flex items-center justify-center text-zinc-300 group-hover:text-white group-hover:bg-purple-600 transition-all">
@@ -141,19 +128,11 @@ export default function PortfolioGrid() {
 
               {/* Embed Iframe Container */}
               <div className="w-full aspect-[9/16] max-h-[500px] rounded-2xl overflow-hidden bg-zinc-900/90 border border-zinc-800 flex items-center justify-center relative mb-6">
-                {selectedProject.type === "tiktok" ? (
-                  <iframe
-                    src={`https://www.tiktok.com/embed/v2/${selectedProject.embedId}`}
-                    className="w-full h-full border-0"
-                    allow="encrypted-media;"
-                  />
-                ) : (
-                  <iframe
-                    src={`https://www.instagram.com/p/${selectedProject.embedId}/embed`}
-                    className="w-full h-full border-0"
-                    allowTransparency={true}
-                  />
-                )}
+                <iframe
+                  src={`https://www.instagram.com/p/${selectedProject.embedId}/embed`}
+                  className="w-full h-full border-0"
+                  allowTransparency={true}
+                />
               </div>
 
               {/* External Link */}
@@ -163,7 +142,7 @@ export default function PortfolioGrid() {
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 px-5 py-2.5 bg-zinc-100 text-zinc-950 font-semibold text-xs rounded-full hover:bg-white transition-all"
               >
-                <span>Open Original Post</span>
+                <span>Open Original Reel</span>
                 <ExternalLink size={14} />
               </a>
             </motion.div>
