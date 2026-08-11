@@ -27,62 +27,63 @@ const EXPERIENCES = [
 
 export default function Experience() {
   return (
-    <section id="about" className="py-24 px-8 md:px-16 max-w-5xl mx-auto z-10 relative">
+    <section id="about" className="py-16 sm:py-24 px-3 sm:px-12 max-w-7xl mx-auto w-full z-10 relative scroll-mt-24">
       
       {/* Header */}
-      <div className="mb-16">
+      <div className="mb-8 sm:mb-16 text-left">
         <motion.span 
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="text-purple-400 font-mono text-sm tracking-wider uppercase"
+          className="text-purple-400 font-mono text-[10px] sm:text-sm tracking-wider uppercase block mb-1 sm:mb-2"
         >
           // Background
         </motion.span>
+        
         <motion.h2 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-4xl md:text-6xl font-extrabold tracking-tight mt-2 text-zinc-100"
+          className="text-2xl sm:text-6xl font-extrabold tracking-tight text-zinc-100"
         >
           Past Experience
         </motion.h2>
       </div>
 
-      {/* Timeline List */}
-      <div className="space-y-12 relative before:absolute before:inset-0 before:left-3 md:before:left-1/2 before:-translate-x-px before:h-full before:w-0.5 before:bg-gradient-to-b before:from-purple-500/50 before:via-zinc-800 before:to-transparent">
+      {/* Timeline List — Split Two-Column Layout Retained Across Screen Sizes */}
+      <div className="space-y-6 sm:space-y-12 relative before:absolute before:inset-0 before:left-1/2 before:-translate-x-px before:h-full before:w-0.5 before:bg-gradient-to-b before:from-purple-500/50 before:via-zinc-800 before:to-transparent">
         {EXPERIENCES.map((exp, index) => (
           <motion.div 
             key={index}
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: index * 0.2 }}
-            className="relative flex flex-col md:flex-row items-start group"
+            transition={{ duration: 0.5, delay: index * 0.15 }}
+            className="relative flex flex-row items-start group"
           >
-            {/* Center Timeline Node */}
-            <div className="absolute left-3 md:left-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-zinc-950 border-2 border-purple-500 group-hover:bg-purple-500 transition-colors z-10 flex items-center justify-center">
-              <div className="w-2 h-2 rounded-full bg-white" />
+            {/* Center Node */}
+            <div className="absolute left-1/2 -translate-x-1/2 w-4 h-4 sm:w-6 sm:h-6 rounded-full bg-zinc-950 border-2 border-purple-500 group-hover:bg-purple-500 transition-colors z-10 flex items-center justify-center">
+              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-white" />
             </div>
 
-            {/* Experience Card */}
-            <div className={`ml-10 md:ml-0 md:w-1/2 ${index % 2 === 0 ? "md:pr-12 md:text-right" : "md:pl-12 md:ml-auto"}`}>
-              <div className="p-6 bg-zinc-900/60 border border-zinc-800/80 rounded-2xl hover:border-zinc-700 transition-colors">
-                <div className={`flex items-center gap-2 text-xs font-mono text-purple-400 mb-2 ${index % 2 === 0 ? "md:justify-end" : "justify-start"}`}>
-                  <Calendar size={14} />
+            {/* Card Positioned Left or Right */}
+            <div className={`w-1/2 ${index % 2 === 0 ? "pr-3 sm:pr-12 text-right" : "pl-3 sm:pl-12 ml-auto text-left"}`}>
+              <div className="p-3 sm:p-6 glass-card rounded-xl sm:rounded-2xl hover:border-zinc-700 transition-colors">
+                <div className={`flex items-center gap-1 sm:gap-2 text-[9px] sm:text-xs font-mono text-purple-400 mb-1 sm:mb-2 ${index % 2 === 0 ? "justify-end" : "justify-start"}`}>
+                  <Calendar size={11} className="sm:w-3.5 sm:h-3.5" />
                   <span>{exp.period}</span>
                 </div>
 
-                <h3 className="text-xl font-bold text-zinc-100">{exp.role}</h3>
-                <h4 className="text-sm text-zinc-400 font-medium mb-4 flex items-center gap-1.5 justify-start md:group-odd:justify-end">
-                  <Briefcase size={14} className="text-zinc-500" />
+                <h3 className="text-xs sm:text-xl font-bold text-zinc-100">{exp.role}</h3>
+                <h4 className={`text-[10px] sm:text-sm text-zinc-400 font-medium mb-2 sm:mb-4 flex items-center gap-1 ${index % 2 === 0 ? "justify-end" : "justify-start"}`}>
+                  <Briefcase size={11} className="text-zinc-500 sm:w-3.5 sm:h-3.5" />
                   <span>{exp.company}</span>
                 </h4>
 
-                <ul className="space-y-2 text-sm text-zinc-400 font-light text-left">
+                <ul className="space-y-1 sm:space-y-2 text-[9px] sm:text-sm text-zinc-400 font-light text-left">
                   {exp.bullets.map((item, idx) => (
-                    <li key={idx} className="flex gap-2 items-start">
+                    <li key={idx} className="flex gap-1 sm:gap-2 items-start">
                       <span className="text-purple-400 shrink-0">•</span>
                       <span>{item}</span>
                     </li>
