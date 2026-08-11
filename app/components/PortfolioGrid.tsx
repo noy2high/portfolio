@@ -4,8 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, ExternalLink, X, Film } from "lucide-react";
 
-// Add new projects to this list.
-// Rule: Place newer projects at the top of this array, or let the array keep chronological order.
+// Projects sorted from newest (top) to oldest (bottom)
 const PROJECTS = [
   {
     id: "project-1",
@@ -17,6 +16,50 @@ const PROJECTS = [
     embedId: "DYCd6LHyXtT",
     directUrl: "https://www.instagram.com/reel/DYCd6LHyXtT/",
     thumbnail: "/thumbnails/kroma7may.jpg",
+  },
+  {
+    id: "project-2",
+    platform: "Instagram",
+    category: "Instagram Post",
+    title: "@kroma.space",
+    date: "April 11, 2026",
+    type: "instagram",
+    embedId: "DW-mnmAgUBK",
+    directUrl: "https://www.instagram.com/p/DW-mnmAgUBK/",
+    thumbnail: "/thumbnails/kroma.spaceapril11.jpg",
+  },
+  {
+    id: "project-3",
+    platform: "Instagram",
+    category: "Instagram Post",
+    title: "@kroma.space",
+    date: "March 19, 2026",
+    type: "instagram",
+    embedId: "DWEVLH0AS5q",
+    directUrl: "https://www.instagram.com/p/DWEVLH0AS5q/",
+    thumbnail: "/thumbnails/kroma.spacemarch19.jpg",
+  },
+  {
+    id: "project-4",
+    platform: "Instagram",
+    category: "Instagram Reel",
+    title: "@kroma.lab",
+    date: "March 1, 2026",
+    type: "instagram",
+    embedId: "DVVfwmnEhLR",
+    directUrl: "https://www.instagram.com/reel/DVVfwmnEhLR/",
+    thumbnail: "/thumbnails/kroma.labmarch1.jpg",
+  },
+  {
+    id: "project-5",
+    platform: "Instagram",
+    category: "Instagram Reel",
+    title: "@kroma.lab",
+    date: "February 10, 2026",
+    type: "instagram",
+    embedId: "DUkQq28gWRp",
+    directUrl: "https://www.instagram.com/reel/DUkQq28gWRp/",
+    thumbnail: "/thumbnails/kroma.labfebruary10.jpg",
   },
 ];
 
@@ -47,7 +90,7 @@ export default function PortfolioGrid() {
         </motion.h2>
       </div>
 
-      {/* Grid List — Displays newest projects first */}
+      {/* Grid List */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {PROJECTS.map((project) => (
           <motion.div
