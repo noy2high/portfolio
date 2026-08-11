@@ -149,9 +149,64 @@ const PROJECTS = [
     directUrl: "https://www.instagram.com/reel/DUkQq28gWRp/",
     thumbnail: "/thumbnails/kroma.labfebruary10.jpg",
   },
+  {
+    id: "project-14",
+    platform: "YouTube",
+    category: "YouTube Short",
+    title: "@iFerr.",
+    date: "January 15, 2025",
+    type: "youtube",
+    embedId: "3HWT4bDch0A",
+    directUrl: "https://www.youtube.com/shorts/3HWT4bDch0A",
+    thumbnail: "/thumbnails/jan15.jpg",
+  },
+  {
+    id: "project-15",
+    platform: "YouTube",
+    category: "YouTube Short",
+    title: "@iFerr.",
+    date: "December 26, 2024",
+    type: "youtube",
+    embedId: "0Yoe6YmzLiY",
+    directUrl: "https://www.youtube.com/shorts/0Yoe6YmzLiY",
+    thumbnail: "/thumbnails/dec26.jpg",
+  },
+  {
+    id: "project-16",
+    platform: "YouTube",
+    category: "YouTube Short",
+    title: "@iFerr.",
+    date: "December 19, 2024",
+    type: "youtube",
+    embedId: "j8MvSdR-A1s",
+    directUrl: "https://www.youtube.com/shorts/j8MvSdR-A1s",
+    thumbnail: "/thumbnails/dec24.jpg",
+  },
+  {
+    id: "project-17",
+    platform: "YouTube",
+    category: "YouTube Short",
+    title: "@iFerr.",
+    date: "December 5, 2024",
+    type: "youtube",
+    embedId: "YPqdxB_3K48",
+    directUrl: "https://www.youtube.com/shorts/YPqdxB_3K48",
+    thumbnail: "/thumbnails/dec5.jpg",
+  },
+  {
+    id: "project-18",
+    platform: "YouTube",
+    category: "YouTube Short",
+    title: "@iFerr.",
+    date: "November 25, 2024",
+    type: "youtube",
+    embedId: "CD9NRNRPT0Y",
+    directUrl: "https://www.youtube.com/shorts/CD9NRNRPT0Y",
+    thumbnail: "/thumbnails/nov25.jpg",
+  },
 ];
 
-const ITEMS_PER_PAGE = 6; // 3x2 Grid
+const ITEMS_PER_PAGE = 8; // 4-column compact layout
 
 export default function PortfolioGrid() {
   const [selectedProject, setSelectedProject] = useState<typeof PROJECTS[0] | null>(null);
@@ -199,8 +254,8 @@ export default function PortfolioGrid() {
         </span>
       </div>
 
-      {/* Grid List — 3x2 Layout */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-12">
+      {/* Grid List — Neat & Compact 4-Column Layout */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mb-12">
         {currentProjects.map((project) => (
           <motion.div
             key={project.id}
@@ -209,7 +264,7 @@ export default function PortfolioGrid() {
             transition={{ duration: 0.4 }}
             whileHover={{ y: -6 }}
             onClick={() => setSelectedProject(project)}
-            className="group glass-card rounded-2xl flex flex-col justify-between min-h-[260px] cursor-pointer hover:border-purple-500/50 transition-all shadow-xl relative overflow-hidden p-6"
+            className="group glass-card rounded-2xl flex flex-col justify-between min-h-[230px] cursor-pointer hover:border-purple-500/50 transition-all shadow-xl relative overflow-hidden p-5"
           >
             {/* Background Thumbnail */}
             {project.thumbnail && (
@@ -228,25 +283,25 @@ export default function PortfolioGrid() {
 
             {/* Top Bar */}
             <div className="flex justify-between items-center z-10 relative">
-              <span className="flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-zinc-950/80 border border-zinc-800 text-[11px] text-zinc-300 font-medium backdrop-blur-md">
-                <Film size={12} className="text-purple-400" />
+              <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-zinc-950/80 border border-zinc-800 text-[10px] text-zinc-300 font-medium backdrop-blur-md">
+                <Film size={11} className="text-purple-400" />
                 {project.platform}
               </span>
 
-              <div className="w-8 h-8 rounded-full bg-zinc-950/80 border border-zinc-800 flex items-center justify-center text-zinc-300 group-hover:text-white group-hover:bg-purple-600 transition-all shadow-md backdrop-blur-md">
-                <Play size={14} className="fill-current ml-0.5" />
+              <div className="w-7 h-7 rounded-full bg-zinc-950/80 border border-zinc-800 flex items-center justify-center text-zinc-300 group-hover:text-white group-hover:bg-purple-600 transition-all shadow-md backdrop-blur-md">
+                <Play size={12} className="fill-current ml-0.5" />
               </div>
             </div>
 
             {/* Bottom Info */}
-            <div className="mt-auto pt-8 z-10 relative text-left">
+            <div className="mt-auto pt-6 z-10 relative text-left">
               <span className="text-[10px] font-mono text-purple-400 uppercase tracking-wider block mb-0.5">
                 {project.category}
               </span>
-              <h3 className="text-2xl font-extrabold text-zinc-100 group-hover:text-white mb-1 tracking-tight">
+              <h3 className="text-xl font-extrabold text-zinc-100 group-hover:text-white mb-0.5 tracking-tight truncate">
                 {project.title}
               </h3>
-              <p className="text-zinc-400 text-xs font-mono">
+              <p className="text-zinc-400 text-[11px] font-mono">
                 {project.date}
               </p>
             </div>
@@ -255,12 +310,12 @@ export default function PortfolioGrid() {
 
         {/* End-of-List Indicator Card (Renders on the last page) */}
         {currentPage === totalPages && (
-          <div className="glass-card rounded-2xl flex flex-col items-center justify-center text-center p-6 min-h-[260px] border border-zinc-800/80 bg-zinc-900/30">
-            <div className="w-10 h-10 rounded-full bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-3 shadow-lg">
-              <Sparkles size={18} />
+          <div className="glass-card rounded-2xl flex flex-col items-center justify-center text-center p-5 min-h-[230px] border border-zinc-800/80 bg-zinc-900/30">
+            <div className="w-9 h-9 rounded-full bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-2 shadow-lg">
+              <Sparkles size={16} />
             </div>
-            <h4 className="text-lg font-bold text-zinc-200">... and many more</h4>
-            <p className="text-xs text-zinc-500 font-mono mt-1">Additional client media archive</p>
+            <h4 className="text-base font-bold text-zinc-200">... and many more</h4>
+            <p className="text-[11px] text-zinc-500 font-mono mt-0.5">Additional client media archive</p>
           </div>
         )}
       </div>
@@ -343,6 +398,13 @@ export default function PortfolioGrid() {
                     src={`https://www.tiktok.com/embed/v2/${selectedProject.embedId}`}
                     className="w-full h-full border-0"
                     allow="encrypted-media;"
+                  />
+                ) : selectedProject.type === "youtube" ? (
+                  <iframe
+                    src={`https://www.youtube.com/embed/${selectedProject.embedId}?autoplay=1`}
+                    className="w-full h-full border-0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
                   />
                 ) : (
                   <iframe
