@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, ExternalLink, X, Film, ChevronLeft, ChevronRight, Sparkles, Image as ImageIcon, Camera, Maximize2 } from "lucide-react";
+import { Play, ExternalLink, X, Film, ChevronLeft, ChevronRight, Sparkles, Image as ImageIcon, Maximize2 } from "lucide-react";
 
-// Complete video project list
+// Video project list sorted from newest to oldest
 const VIDEO_PROJECTS = [
   {
     id: "project-1",
@@ -206,35 +206,74 @@ const VIDEO_PROJECTS = [
   },
 ];
 
-// Sample Photo/Graphic Design list (ratio can be 'vertical', 'square', or 'horizontal')
+// Photo project list sorted from newest to oldest
 const PHOTO_PROJECTS = [
   {
     id: "photo-1",
-    title: "Brand Identity Design",
-    category: "Visual Identity",
-    date: "2026",
-    image: "/thumbnails/kroma7may.jpg", // Replace with your graphic asset
-    ratio: "square", // 'square', 'vertical', or 'horizontal'
+    platform: "Canva",
+    category: "Commission",
+    date: "June 26, 2026",
+    image: "/thumbnails/june262026.jpg",
   },
   {
     id: "photo-2",
-    title: "Social Media Campaign Asset",
-    category: "Graphic Design",
-    date: "2026",
-    image: "/thumbnails/soonie4-9.jpg",
-    ratio: "vertical",
+    platform: "Canva",
+    category: "Commission",
+    date: "May 12, 2026",
+    image: "/thumbnails/may122026.jpg",
   },
   {
     id: "photo-3",
-    title: "Editorial Layout & Typography",
-    category: "Print & Digital",
-    date: "2025",
-    image: "/thumbnails/jan15.jpg",
-    ratio: "horizontal",
+    platform: "Canva",
+    category: "Commission",
+    date: "March 17, 2026",
+    image: "/thumbnails/mach172026.jpg",
+  },
+  {
+    id: "photo-4",
+    platform: "Canva",
+    category: "Commission",
+    date: "April 13, 2025",
+    image: "/thumbnails/april132025.jpg",
+  },
+  {
+    id: "photo-5",
+    platform: "Canva",
+    category: "Commission",
+    date: "March 22, 2025",
+    image: "/thumbnails/march222025.jpg",
+  },
+  {
+    id: "photo-6",
+    platform: "Canva",
+    category: "Commission",
+    date: "March 18, 2025",
+    image: "/thumbnails/march182025.jpg",
+  },
+  {
+    id: "photo-7",
+    platform: "Canva",
+    category: "Commission",
+    date: "November 18, 2024",
+    image: "/thumbnails/nov182024.jpg",
+  },
+  {
+    id: "photo-8",
+    platform: "Canva",
+    category: "Commission",
+    date: "May 14, 2024",
+    image: "/thumbnails/may142024.jpg",
+  },
+  {
+    id: "photo-9",
+    platform: "Canva",
+    category: "Commission",
+    date: "February 17, 2023",
+    image: "/thumbnails/feb172023.jpg",
   },
 ];
 
-const ITEMS_PER_PAGE = 8;
+const ITEMS_PER_PAGE = 8; // 4-column compact layout
 
 export default function PortfolioGrid() {
   const [activeTab, setActiveTab] = useState<"video" | "photo">("video");
@@ -242,9 +281,10 @@ export default function PortfolioGrid() {
   const [selectedPhoto, setSelectedPhoto] = useState<typeof PHOTO_PROJECTS[0] | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const totalPages = Math.ceil(VIDEO_PROJECTS.length / ITEMS_PER_PAGE);
+  const activeDataset = activeTab === "video" ? VIDEO_PROJECTS : PHOTO_PROJECTS;
+  const totalPages = Math.ceil(activeDataset.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const currentVideos = VIDEO_PROJECTS.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const currentItems = activeDataset.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -283,7 +323,7 @@ export default function PortfolioGrid() {
             Featured Projects
           </motion.h2>
           <p className="text-xs font-mono text-zinc-500 mt-2">
-            {activeTab === "video" ? "Youtube Shorts, TikTok Videos, and Instagram Reels." : "Graphic Design, Brand Assets, and Visual Works."}
+            {activeTab === "video" ? "Youtube Shorts, TikTok Videos, and Instagram Reels." : "Commission Designs & Graphics."}
           </p>
         </div>
 
@@ -318,7 +358,7 @@ export default function PortfolioGrid() {
       {activeTab === "video" ? (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mb-12">
-            {currentVideos.map((project) => (
+            {(currentItems as typeof VIDEO_PROJECTS).map((project) => (
               <motion.div
                 key={project.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -413,50 +453,101 @@ export default function PortfolioGrid() {
           )}
         </>
       ) : (
-        /* PHOTO TAB CONTENT (Handles variable ratios: vertical, square, horizontal) */
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {PHOTO_PROJECTS.map((photo) => (
-            <motion.div
-              key={photo.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              whileHover={{ y: -6 }}
-              onClick={() => setSelectedPhoto(photo)}
-              className={`group glass-card rounded-2xl cursor-pointer overflow-hidden border border-zinc-800/80 relative flex flex-col justify-end shadow-xl p-6 transition-all ${
-                photo.ratio === "vertical"
-                  ? "aspect-[4/5] sm:col-span-1"
-                  : photo.ratio === "horizontal"
-                  ? "aspect-[16/10] sm:col-span-2"
-                  : "aspect-square"
-              }`}
-            >
-              {/* Background Image with Natural Scaling */}
-              <div className="absolute inset-0 z-0 bg-zinc-900">
-                <img
-                  src={photo.image}
-                  alt={photo.title}
-                  className="w-full h-full object-cover opacity-50 group-hover:opacity-70 group-hover:scale-105 transition-all duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
-              </div>
+        /* PHOTO TAB CONTENT */
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mb-12">
+            {(currentItems as typeof PHOTO_PROJECTS).map((photo) => (
+              <motion.div
+                key={photo.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+                whileHover={{ y: -6 }}
+                onClick={() => setSelectedPhoto(photo)}
+                className="group glass-card rounded-2xl flex flex-col justify-between min-h-[230px] cursor-pointer hover:border-purple-500/50 transition-all shadow-xl relative overflow-hidden p-5"
+              >
+                {/* Background Image */}
+                <div className="absolute inset-0 z-0 bg-zinc-900">
+                  <img
+                    src={photo.image}
+                    alt=""
+                    className="w-full h-full object-cover opacity-45 group-hover:opacity-60 group-hover:scale-105 transition-all duration-500"
+                    onError={(e) => {
+                      (e.target as HTMLElement).style.display = 'none';
+                    }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/60 to-zinc-950/10" />
+                </div>
 
-              {/* Hover Zoom Icon */}
-              <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-zinc-950/80 border border-zinc-800 flex items-center justify-center text-zinc-300 group-hover:text-white group-hover:bg-purple-600 transition-all z-10 backdrop-blur-md">
-                <Maximize2 size={14} />
-              </div>
+                {/* Top Bar Badge: Canva */}
+                <div className="flex justify-between items-center z-10 relative">
+                  <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-zinc-950/80 border border-zinc-800 text-[10px] text-zinc-300 font-medium backdrop-blur-md">
+                    <ImageIcon size={11} className="text-purple-400" />
+                    {photo.platform}
+                  </span>
 
-              {/* Info */}
-              <div className="z-10 relative text-left">
-                <span className="text-[10px] font-mono text-purple-400 uppercase tracking-wider block mb-0.5">
-                  {photo.category}
-                </span>
-                <h3 className="text-xl font-bold text-zinc-100 group-hover:text-white tracking-tight">
-                  {photo.title}
-                </h3>
+                  <div className="w-7 h-7 rounded-full bg-zinc-950/80 border border-zinc-800 flex items-center justify-center text-zinc-300 group-hover:text-white group-hover:bg-purple-600 transition-all shadow-md backdrop-blur-md">
+                    <Maximize2 size={12} />
+                  </div>
+                </div>
+
+                {/* Bottom Info: Commission + Date (No big creator title) */}
+                <div className="mt-auto pt-6 z-10 relative text-left">
+                  <span className="text-[11px] font-mono text-purple-400 uppercase tracking-wider block mb-0.5">
+                    {photo.category}
+                  </span>
+                  <p className="text-zinc-400 text-xs font-mono">
+                    {photo.date}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+
+            {currentPage === totalPages && (
+              <div className="glass-card rounded-2xl flex flex-col items-center justify-center text-center p-5 min-h-[230px] border border-zinc-800/80 bg-zinc-900/30">
+                <div className="w-9 h-9 rounded-full bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-2 shadow-lg">
+                  <Sparkles size={16} />
+                </div>
+                <h4 className="text-base font-bold text-zinc-200">... and many more</h4>
+                <p className="text-[11px] text-zinc-500 font-mono mt-0.5">Additional graphics archive</p>
               </div>
-            </motion.div>
-          ))}
-        </div>
+            )}
+          </div>
+
+          {totalPages > 1 && (
+            <div className="flex justify-center items-center gap-2">
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="p-2 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+              >
+                <ChevronLeft size={18} />
+              </button>
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <button
+                  key={page}
+                  onClick={() => handlePageChange(page)}
+                  className={`w-9 h-9 text-xs font-mono rounded-full border transition-all ${
+                    currentPage === page
+                      ? "bg-zinc-100 text-zinc-950 border-white font-bold scale-105"
+                      : "bg-zinc-900/80 text-zinc-400 border-zinc-800 hover:border-zinc-700 hover:text-white"
+                  }`}
+                >
+                  {page}
+                </button>
+              ))}
+
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="p-2 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+              >
+                <ChevronRight size={18} />
+              </button>
+            </div>
+          )}
+        </>
       )}
 
       {/* Video Embed Modal */}
@@ -528,7 +619,7 @@ export default function PortfolioGrid() {
         )}
       </AnimatePresence>
 
-      {/* Photo Lightbox Modal */}
+      {/* Photo Lightbox Popup */}
       <AnimatePresence>
         {selectedPhoto && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -553,17 +644,16 @@ export default function PortfolioGrid() {
                 <X size={18} />
               </button>
 
-              <div className="w-full max-h-[70vh] rounded-2xl overflow-hidden bg-zinc-900 flex items-center justify-center mb-4">
+              <div className="w-full max-h-[72vh] rounded-2xl overflow-hidden bg-zinc-900 flex items-center justify-center mb-3">
                 <img
                   src={selectedPhoto.image}
-                  alt={selectedPhoto.title}
-                  className="w-full h-auto max-h-[70vh] object-contain"
+                  alt=""
+                  className="w-full h-auto max-h-[72vh] object-contain"
                 />
               </div>
 
               <div className="text-center">
-                <h3 className="text-lg font-bold text-zinc-100">{selectedPhoto.title}</h3>
-                <span className="text-xs font-mono text-purple-400">{selectedPhoto.category}</span>
+                <span className="text-xs font-mono text-purple-400 block">{selectedPhoto.category} • {selectedPhoto.date}</span>
               </div>
             </motion.div>
           </div>
