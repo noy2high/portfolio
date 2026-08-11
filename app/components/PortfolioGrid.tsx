@@ -4,6 +4,8 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, ExternalLink, X, Film } from "lucide-react";
 
+// Add new projects to this list.
+// Rule: Place newer projects at the top of this array, or let the array keep chronological order.
 const PROJECTS = [
   {
     id: "project-1",
@@ -14,7 +16,7 @@ const PROJECTS = [
     type: "instagram",
     embedId: "DYCd6LHyXtT",
     directUrl: "https://www.instagram.com/reel/DYCd6LHyXtT/",
-    thumbnail: "https://i.snapcdn.app/photo?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJodHRwczovL3Njb250ZW50LmNkbmluc3RhZ3JhbS5jb20vdi90NTEuODI3ODctMTUvNjg1MzgwMzU4XzE4MTEyMTYxNDcyODc2NjI1XzI2ODM1NTI0NTA3NzUxMjU1Nl9uLmpwZz9zdHA9ZHN0LWpwZ1_eMTVfdHQ2Jl9uY19jYXQ9MTAxJmlnX2NhY2hlX2tleT1Nemc1TVRnd05EVTJPVEF5TVRnd056UTBNekU0TVRFeU1UWXhORFk1T0RjMk5qSTEuMy1jY2I3LTUmY2NiPTctNSZfbmNfc2lkPTU4Y2RhZCZlZmc9ZXlKMlpXNWpiMlJsWDNSaFp5STZJa05NU1ZCVExuaHdhV1J6TGpFd09EQXVjMlJ5TG5acFpHVnZYMlJsWm1GMWJIUmZZMjkyWlhKZlpuSmhiV1V1UXpNaWZRJTNEJTNEJl9uY19vaGM9TjZ2ZnlSeC04Rk1RN2tOdndFOUtRSE8mX25jX29jPUFkcTk3alhlQ0F3U05HRTNWem5XanJBYVVySEItT0IyLUxIcEFPbG1va01QUHdfMlJNbE1SZThudXhoQXF0aGNJWTQmX25jX2FkPXotbSZfbmNfY2lkPTAmX25jX3p0PTIzJl9uY19odD1zY29udGVudC1sZ2EzLTIuY2RuaW5zdGFncmFtLmNvbSZfbmNfZ2lkPWVhUGItLTh5TEVfLU91UFoxMEVraEEmX25jX3NzPTdhMjJlJm9oPTAwX0FRRndsdkp2aHAzbDc3MmZfQnY0Zk4xbXJWWk5odU04R2lya2hjNk5LNHFkR3cmb2U9NkE4MENENjciLCJmaWxlbmFtZSI6IlRodW1ibmFpbF82ODUzODAzNThfMTgxMTIxNjE0NzI4NzY2MjVfMjY4MzU1MjQ1MDc3NTEyNTU2X24uanBnIiwibmJmIjoxNzg2NDQ0NDQyLCJleHAiOjE3ODY0NDgwNDIsImlhdCI6MTc4NjQ0NDgwNDJ9.zgQSYbAvkOKeA9GM36Zp8DDyPKJzyapTnxKToNTWX5g",
+    thumbnail: "/thumbnails/kroma7may.jpg",
   },
 ];
 
@@ -45,7 +47,7 @@ export default function PortfolioGrid() {
         </motion.h2>
       </div>
 
-      {/* Grid List */}
+      {/* Grid List — Displays newest projects first */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {PROJECTS.map((project) => (
           <motion.div
@@ -57,16 +59,13 @@ export default function PortfolioGrid() {
             onClick={() => setSelectedProject(project)}
             className="group glass-card rounded-3xl flex flex-col justify-between min-h-[340px] cursor-pointer hover:border-purple-500/50 transition-all shadow-xl relative overflow-hidden p-8"
           >
-            {/* Background Image with Auto-Hide Error Fallback */}
+            {/* Local Image Background */}
             {project.thumbnail && (
-              <div className="absolute inset-0 z-0">
+              <div className="absolute inset-0 z-0 bg-zinc-900">
                 <img
                   src={project.thumbnail}
-                  alt=""
-                  onError={(e) => {
-                    (e.target as HTMLElement).style.display = 'none';
-                  }}
-                  className="w-full h-full object-cover opacity-35 group-hover:opacity-50 group-hover:scale-105 transition-all duration-500"
+                  alt={project.title}
+                  className="w-full h-full object-cover opacity-40 group-hover:opacity-55 group-hover:scale-105 transition-all duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/70 to-zinc-950/20" />
               </div>
@@ -137,7 +136,7 @@ export default function PortfolioGrid() {
               </span>
 
               {/* Compact Embed Frame */}
-              <div className="w-full aspect-[9/16] max-h-[400px] rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800 flex items-center justify-center relative mb-4">
+              <div className="w-full aspect-[9/16] max-h-[380px] rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800 flex items-center justify-center relative mb-4">
                 <iframe
                   src={`https://www.instagram.com/p/${selectedProject.embedId}/embed`}
                   className="w-full h-full border-0"
