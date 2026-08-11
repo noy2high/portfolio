@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, ExternalLink, X, Film } from "lucide-react";
+import { Play, ExternalLink, X, Film, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 
-// Projects sorted from newest (top) to oldest (bottom)
+// Complete project list sorted from newest (top) to oldest (bottom)
 const PROJECTS = [
   {
     id: "project-1",
@@ -19,6 +19,17 @@ const PROJECTS = [
   },
   {
     id: "project-2",
+    platform: "TikTok",
+    category: "TikTok Video",
+    title: "@soonieofficial",
+    date: "April 9, 2026",
+    type: "tiktok",
+    embedId: "7626476588481219861",
+    directUrl: "https://www.tiktok.com/@soonieofficial/video/7626476588481219861",
+    thumbnail: "/thumbnails/soonie4-9.jpg",
+  },
+  {
+    id: "project-3",
     platform: "Instagram",
     category: "Instagram Reel",
     title: "@kroma.space",
@@ -29,7 +40,40 @@ const PROJECTS = [
     thumbnail: "/thumbnails/kroma.spaceapril11.jpg",
   },
   {
-    id: "project-3",
+    id: "project-4",
+    platform: "TikTok",
+    category: "TikTok Video",
+    title: "@soonieofficial",
+    date: "April 2, 2026",
+    type: "tiktok",
+    embedId: "7624068088484482325",
+    directUrl: "https://www.tiktok.com/@soonieofficial/video/7624068088484482325",
+    thumbnail: "/thumbnails/soonie4-2.jpg",
+  },
+  {
+    id: "project-5",
+    platform: "TikTok",
+    category: "TikTok Video",
+    title: "@soonieofficial",
+    date: "March 29, 2026",
+    type: "tiktok",
+    embedId: "7622660464337554708",
+    directUrl: "https://www.tiktok.com/@soonieofficial/video/7622660464337554708",
+    thumbnail: "/thumbnails/soonie3-29.jpg",
+  },
+  {
+    id: "project-6",
+    platform: "TikTok",
+    category: "TikTok Video",
+    title: "@soonieofficial",
+    date: "March 27, 2026",
+    type: "tiktok",
+    embedId: "7621882844540898580",
+    directUrl: "https://www.tiktok.com/@soonieofficial/video/7621882844540898580",
+    thumbnail: "/thumbnails/soonie3-27.jpg",
+  },
+  {
+    id: "project-7",
     platform: "Instagram",
     category: "Instagram Reel",
     title: "@kroma.space",
@@ -40,7 +84,40 @@ const PROJECTS = [
     thumbnail: "/thumbnails/kroma.spacemarch19.jpg",
   },
   {
-    id: "project-4",
+    id: "project-8",
+    platform: "TikTok",
+    category: "TikTok Video",
+    title: "@soonieofficial",
+    date: "March 12, 2026",
+    type: "tiktok",
+    embedId: "7616248817565846804",
+    directUrl: "https://www.tiktok.com/@soonieofficial/video/7616248817565846804",
+    thumbnail: "/thumbnails/soonie3-12.jpg",
+  },
+  {
+    id: "project-9",
+    platform: "TikTok",
+    category: "TikTok Video",
+    title: "@soonieofficial",
+    date: "March 10, 2026",
+    type: "tiktok",
+    embedId: "7615511555148483861",
+    directUrl: "https://www.tiktok.com/@soonieofficial/video/7615511555148483861",
+    thumbnail: "/thumbnails/soonie3-10.jpg",
+  },
+  {
+    id: "project-10",
+    platform: "TikTok",
+    category: "TikTok Video",
+    title: "@soonieofficial",
+    date: "March 9, 2026",
+    type: "tiktok",
+    embedId: "7614978783451417877",
+    directUrl: "https://www.tiktok.com/@soonieofficial/video/7614978783451417877",
+    thumbnail: "/thumbnails/soonie3-9.jpg",
+  },
+  {
+    id: "project-11",
     platform: "Instagram",
     category: "Instagram Reel",
     title: "@kroma.lab",
@@ -51,7 +128,18 @@ const PROJECTS = [
     thumbnail: "/thumbnails/kroma.labmarch1.jpg",
   },
   {
-    id: "project-5",
+    id: "project-12",
+    platform: "TikTok",
+    category: "TikTok Video",
+    title: "@soonieofficial",
+    date: "February 11, 2026",
+    type: "tiktok",
+    embedId: "7605583672237968661",
+    directUrl: "https://www.tiktok.com/@soonieofficial/video/7605583672237968661",
+    thumbnail: "/thumbnails/soonie2-11.jpg",
+  },
+  {
+    id: "project-13",
     platform: "Instagram",
     category: "Instagram Reel",
     title: "@kroma.lab",
@@ -63,41 +151,62 @@ const PROJECTS = [
   },
 ];
 
+const ITEMS_PER_PAGE = 6; // 3x2 Grid
+
 export default function PortfolioGrid() {
   const [selectedProject, setSelectedProject] = useState<typeof PROJECTS[0] | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalPages = Math.ceil(PROJECTS.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const currentProjects = PROJECTS.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    const workElement = document.getElementById("work");
+    if (workElement) {
+      workElement.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   return (
     <section id="work" className="py-24 px-6 sm:px-12 max-w-7xl mx-auto w-full z-10 relative scroll-mt-24">
       
       {/* Section Header */}
-      <div className="mb-12 text-left">
-        <motion.span 
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="text-purple-400 font-mono text-xs sm:text-sm tracking-wider uppercase block mb-2"
-        >
-          // Selected Works
-        </motion.span>
-        <motion.h2 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-4xl md:text-6xl font-extrabold tracking-tight text-zinc-100"
-        >
-          Featured Projects
-        </motion.h2>
-      </div>
-
-      {/* Grid List — Compact 3-Column Layout */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {PROJECTS.map((project) => (
-          <motion.div
-            key={project.id}
+      <div className="mb-12 text-left flex justify-between items-end">
+        <div>
+          <motion.span 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="text-purple-400 font-mono text-xs sm:text-sm tracking-wider uppercase block mb-2"
+          >
+            // Selected Works
+          </motion.span>
+          <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-4xl md:text-6xl font-extrabold tracking-tight text-zinc-100"
+          >
+            Featured Projects
+          </motion.h2>
+        </div>
+
+        <span className="text-xs font-mono text-zinc-500 hidden sm:block">
+          Showing {startIndex + 1}–{Math.min(startIndex + ITEMS_PER_PAGE, PROJECTS.length)} of {PROJECTS.length}
+        </span>
+      </div>
+
+      {/* Grid List — 3x2 Layout */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-12">
+        {currentProjects.map((project) => (
+          <motion.div
+            key={project.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
             whileHover={{ y: -6 }}
             onClick={() => setSelectedProject(project)}
             className="group glass-card rounded-2xl flex flex-col justify-between min-h-[260px] cursor-pointer hover:border-purple-500/50 transition-all shadow-xl relative overflow-hidden p-6"
@@ -109,6 +218,9 @@ export default function PortfolioGrid() {
                   src={project.thumbnail}
                   alt={project.title}
                   className="w-full h-full object-cover opacity-40 group-hover:opacity-55 group-hover:scale-105 transition-all duration-500"
+                  onError={(e) => {
+                    (e.target as HTMLElement).style.display = 'none';
+                  }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/70 to-zinc-950/20" />
               </div>
@@ -140,9 +252,55 @@ export default function PortfolioGrid() {
             </div>
           </motion.div>
         ))}
+
+        {/* End-of-List Indicator Card (Renders on the last page) */}
+        {currentPage === totalPages && (
+          <div className="glass-card rounded-2xl flex flex-col items-center justify-center text-center p-6 min-h-[260px] border border-zinc-800/80 bg-zinc-900/30">
+            <div className="w-10 h-10 rounded-full bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-3 shadow-lg">
+              <Sparkles size={18} />
+            </div>
+            <h4 className="text-lg font-bold text-zinc-200">... and many more</h4>
+            <p className="text-xs text-zinc-500 font-mono mt-1">Additional client media archive</p>
+          </div>
+        )}
       </div>
 
-      {/* Compact Video Embed Modal */}
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="flex justify-center items-center gap-2">
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="p-2 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+          >
+            <ChevronLeft size={18} />
+          </button>
+
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <button
+              key={page}
+              onClick={() => handlePageChange(page)}
+              className={`w-9 h-9 text-xs font-mono rounded-full border transition-all ${
+                currentPage === page
+                  ? "bg-zinc-100 text-zinc-950 border-white font-bold scale-105"
+                  : "bg-zinc-900/80 text-zinc-400 border-zinc-800 hover:border-zinc-700 hover:text-white"
+              }`}
+            >
+              {page}
+            </button>
+          ))}
+
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="p-2 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+          >
+            <ChevronRight size={18} />
+          </button>
+        </div>
+      )}
+
+      {/* Video Embed Modal */}
       <AnimatePresence>
         {selectedProject && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -180,11 +338,19 @@ export default function PortfolioGrid() {
 
               {/* Compact Embed Frame */}
               <div className="w-full aspect-[9/16] max-h-[380px] rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800 flex items-center justify-center relative mb-4">
-                <iframe
-                  src={`https://www.instagram.com/p/${selectedProject.embedId}/embed`}
-                  className="w-full h-full border-0"
-                  allowTransparency={true}
-                />
+                {selectedProject.type === "tiktok" ? (
+                  <iframe
+                    src={`https://www.tiktok.com/embed/v2/${selectedProject.embedId}`}
+                    className="w-full h-full border-0"
+                    allow="encrypted-media;"
+                  />
+                ) : (
+                  <iframe
+                    src={`https://www.instagram.com/p/${selectedProject.embedId}/embed`}
+                    className="w-full h-full border-0"
+                    allowTransparency={true}
+                  />
+                )}
               </div>
 
               {/* External Button */}
