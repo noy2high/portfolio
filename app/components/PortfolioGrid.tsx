@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, ExternalLink, X, Film, ChevronLeft, ChevronRight, Sparkles, Image as ImageIcon, Camera } from "lucide-react";
+import { Play, ExternalLink, X, Film, ChevronLeft, ChevronRight, Sparkles, Image as ImageIcon, Camera, Maximize2 } from "lucide-react";
 
-// Complete project list sorted from newest (top) to oldest (bottom)
-const PROJECTS = [
+// Complete video project list
+const VIDEO_PROJECTS = [
   {
     id: "project-1",
     platform: "Instagram",
@@ -206,16 +206,45 @@ const PROJECTS = [
   },
 ];
 
-const ITEMS_PER_PAGE = 8; // 4-column compact layout
+// Sample Photo/Graphic Design list (ratio can be 'vertical', 'square', or 'horizontal')
+const PHOTO_PROJECTS = [
+  {
+    id: "photo-1",
+    title: "Brand Identity Design",
+    category: "Visual Identity",
+    date: "2026",
+    image: "/thumbnails/kroma7may.jpg", // Replace with your graphic asset
+    ratio: "square", // 'square', 'vertical', or 'horizontal'
+  },
+  {
+    id: "photo-2",
+    title: "Social Media Campaign Asset",
+    category: "Graphic Design",
+    date: "2026",
+    image: "/thumbnails/soonie4-9.jpg",
+    ratio: "vertical",
+  },
+  {
+    id: "photo-3",
+    title: "Editorial Layout & Typography",
+    category: "Print & Digital",
+    date: "2025",
+    image: "/thumbnails/jan15.jpg",
+    ratio: "horizontal",
+  },
+];
+
+const ITEMS_PER_PAGE = 8;
 
 export default function PortfolioGrid() {
   const [activeTab, setActiveTab] = useState<"video" | "photo">("video");
-  const [selectedProject, setSelectedProject] = useState<typeof PROJECTS[0] | null>(null);
+  const [selectedVideo, setSelectedVideo] = useState<typeof VIDEO_PROJECTS[0] | null>(null);
+  const [selectedPhoto, setSelectedPhoto] = useState<typeof PHOTO_PROJECTS[0] | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const totalPages = Math.ceil(PROJECTS.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(VIDEO_PROJECTS.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const currentProjects = PROJECTS.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const currentVideos = VIDEO_PROJECTS.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -254,11 +283,11 @@ export default function PortfolioGrid() {
             Featured Projects
           </motion.h2>
           <p className="text-xs font-mono text-zinc-500 mt-2">
-            Youtube Shorts, TikTok Videos, and Instagram Reels.
+            {activeTab === "video" ? "Youtube Shorts, TikTok Videos, and Instagram Reels." : "Graphic Design, Brand Assets, and Visual Works."}
           </p>
         </div>
 
-        {/* Category Switcher Tab (Replaces old counter position) */}
+        {/* Category Switcher Tab */}
         <div className="flex gap-1.5 p-1 bg-zinc-900/80 border border-zinc-800 rounded-full backdrop-blur-md shrink-0">
           <button
             onClick={() => handleTabSwitch("video")}
@@ -288,19 +317,17 @@ export default function PortfolioGrid() {
       {/* VIDEO TAB CONTENT */}
       {activeTab === "video" ? (
         <>
-          {/* Grid List — Neat & Compact 4-Column Layout */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mb-12">
-            {currentProjects.map((project) => (
+            {currentVideos.map((project) => (
               <motion.div
                 key={project.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4 }}
                 whileHover={{ y: -6 }}
-                onClick={() => setSelectedProject(project)}
+                onClick={() => setSelectedVideo(project)}
                 className="group glass-card rounded-2xl flex flex-col justify-between min-h-[230px] cursor-pointer hover:border-purple-500/50 transition-all shadow-xl relative overflow-hidden p-5"
               >
-                {/* Background Thumbnail */}
                 {project.thumbnail && (
                   <div className="absolute inset-0 z-0 bg-zinc-900">
                     <img
@@ -315,7 +342,6 @@ export default function PortfolioGrid() {
                   </div>
                 )}
 
-                {/* Top Bar */}
                 <div className="flex justify-between items-center z-10 relative">
                   <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-zinc-950/80 border border-zinc-800 text-[10px] text-zinc-300 font-medium backdrop-blur-md">
                     <Film size={11} className="text-purple-400" />
@@ -327,7 +353,6 @@ export default function PortfolioGrid() {
                   </div>
                 </div>
 
-                {/* Bottom Info */}
                 <div className="mt-auto pt-6 z-10 relative text-left">
                   <span className="text-[10px] font-mono text-purple-400 uppercase tracking-wider block mb-0.5">
                     {project.category}
@@ -342,7 +367,6 @@ export default function PortfolioGrid() {
               </motion.div>
             ))}
 
-            {/* End-of-List Indicator Card (Renders on the last page) */}
             {currentPage === totalPages && (
               <div className="glass-card rounded-2xl flex flex-col items-center justify-center text-center p-5 min-h-[230px] border border-zinc-800/80 bg-zinc-900/30">
                 <div className="w-9 h-9 rounded-full bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-2 shadow-lg">
@@ -354,7 +378,6 @@ export default function PortfolioGrid() {
             )}
           </div>
 
-          {/* Pagination Controls */}
           {totalPages > 1 && (
             <div className="flex justify-center items-center gap-2">
               <button
@@ -390,89 +413,109 @@ export default function PortfolioGrid() {
           )}
         </>
       ) : (
-        /* PHOTO TAB CONTENT (Graphics & Visual Design Showcase) */
-        <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="glass-card rounded-3xl p-10 sm:p-14 flex flex-col items-center justify-center text-center min-h-[320px] max-w-full border border-purple-500/20 bg-purple-500/5 shadow-2xl"
-        >
-          <div className="w-14 h-14 rounded-2xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-5 shadow-lg shadow-purple-500/5">
-            <Camera size={28} />
-          </div>
+        /* PHOTO TAB CONTENT (Handles variable ratios: vertical, square, horizontal) */
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {PHOTO_PROJECTS.map((photo) => (
+            <motion.div
+              key={photo.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              whileHover={{ y: -6 }}
+              onClick={() => setSelectedPhoto(photo)}
+              className={`group glass-card rounded-2xl cursor-pointer overflow-hidden border border-zinc-800/80 relative flex flex-col justify-end shadow-xl p-6 transition-all ${
+                photo.ratio === "vertical"
+                  ? "aspect-[4/5] sm:col-span-1"
+                  : photo.ratio === "horizontal"
+                  ? "aspect-[16/10] sm:col-span-2"
+                  : "aspect-square"
+              }`}
+            >
+              {/* Background Image with Natural Scaling */}
+              <div className="absolute inset-0 z-0 bg-zinc-900">
+                <img
+                  src={photo.image}
+                  alt={photo.title}
+                  className="w-full h-full object-cover opacity-50 group-hover:opacity-70 group-hover:scale-105 transition-all duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
+              </div>
 
-          <h3 className="text-2xl font-bold text-zinc-100 mb-2">
-            Graphic Design Showcase Coming Soon
-          </h3>
-          
-          <p className="text-zinc-400 text-sm max-w-md font-light leading-relaxed">
-            Arya is curating the graphic design and visual asset gallery. Check back shortly!
-          </p>
-        </motion.div>
+              {/* Hover Zoom Icon */}
+              <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-zinc-950/80 border border-zinc-800 flex items-center justify-center text-zinc-300 group-hover:text-white group-hover:bg-purple-600 transition-all z-10 backdrop-blur-md">
+                <Maximize2 size={14} />
+              </div>
+
+              {/* Info */}
+              <div className="z-10 relative text-left">
+                <span className="text-[10px] font-mono text-purple-400 uppercase tracking-wider block mb-0.5">
+                  {photo.category}
+                </span>
+                <h3 className="text-xl font-bold text-zinc-100 group-hover:text-white tracking-tight">
+                  {photo.title}
+                </h3>
+              </div>
+            </motion.div>
+          ))}
+        </div>
       )}
 
       {/* Video Embed Modal */}
       <AnimatePresence>
-        {selectedProject && (
+        {selectedVideo && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            
-            {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => setSelectedProject(null)}
+              onClick={() => setSelectedVideo(null)}
               className="absolute inset-0 bg-zinc-950/85 backdrop-blur-md"
             />
 
-            {/* Compact Modal Card */}
             <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 15 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 15 }}
               className="glass-card rounded-3xl p-5 sm:p-6 max-w-sm w-full z-10 relative flex flex-col items-center shadow-2xl border border-zinc-700/80 max-h-[85vh] overflow-hidden"
             >
-              {/* Close Button */}
               <button
-                onClick={() => setSelectedProject(null)}
+                onClick={() => setSelectedVideo(null)}
                 className="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-zinc-900 border border-zinc-700 flex items-center justify-center text-zinc-400 hover:text-white transition-colors z-20"
               >
                 <X size={16} />
               </button>
 
               <h3 className="text-xl font-extrabold text-zinc-100 mb-0.5 text-center pr-6">
-                {selectedProject.title}
+                {selectedVideo.title}
               </h3>
               <span className="text-[11px] font-mono text-purple-400 mb-4 block text-center">
-                {selectedProject.category} • {selectedProject.date}
+                {selectedVideo.category} • {selectedVideo.date}
               </span>
 
-              {/* Compact Embed Frame */}
               <div className="w-full aspect-[9/16] max-h-[380px] rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800 flex items-center justify-center relative mb-4">
-                {selectedProject.type === "tiktok" ? (
+                {selectedVideo.type === "tiktok" ? (
                   <iframe
-                    src={`https://www.tiktok.com/embed/v2/${selectedProject.embedId}`}
+                    src={`https://www.tiktok.com/embed/v2/${selectedVideo.embedId}`}
                     className="w-full h-full border-0"
                     allow="encrypted-media;"
                   />
-                ) : selectedProject.type === "youtube" ? (
+                ) : selectedVideo.type === "youtube" ? (
                   <iframe
-                    src={`https://www.youtube.com/embed/${selectedProject.embedId}?autoplay=1`}
+                    src={`https://www.youtube.com/embed/${selectedVideo.embedId}?autoplay=1`}
                     className="w-full h-full border-0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                   />
                 ) : (
                   <iframe
-                    src={`https://www.instagram.com/p/${selectedProject.embedId}/embed`}
+                    src={`https://www.instagram.com/p/${selectedVideo.embedId}/embed`}
                     className="w-full h-full border-0"
                     allowTransparency={true}
                   />
                 )}
               </div>
 
-              {/* External Button */}
               <a
-                href={selectedProject.directUrl}
+                href={selectedVideo.directUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 px-4 py-2 bg-zinc-100 text-zinc-950 font-semibold text-xs rounded-full hover:bg-white transition-all shadow-md"
@@ -480,6 +523,48 @@ export default function PortfolioGrid() {
                 <span>Open Original Post</span>
                 <ExternalLink size={13} />
               </a>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Photo Lightbox Modal */}
+      <AnimatePresence>
+        {selectedPhoto && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedPhoto(null)}
+              className="absolute inset-0 bg-zinc-950/90 backdrop-blur-md"
+            />
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="glass-card rounded-3xl p-4 max-w-2xl w-full z-10 relative flex flex-col items-center shadow-2xl border border-zinc-700/80 overflow-hidden"
+            >
+              <button
+                onClick={() => setSelectedPhoto(null)}
+                className="absolute top-4 right-4 w-9 h-9 rounded-full bg-zinc-900 border border-zinc-700 flex items-center justify-center text-zinc-400 hover:text-white transition-colors z-20 shadow-lg"
+              >
+                <X size={18} />
+              </button>
+
+              <div className="w-full max-h-[70vh] rounded-2xl overflow-hidden bg-zinc-900 flex items-center justify-center mb-4">
+                <img
+                  src={selectedPhoto.image}
+                  alt={selectedPhoto.title}
+                  className="w-full h-auto max-h-[70vh] object-contain"
+                />
+              </div>
+
+              <div className="text-center">
+                <h3 className="text-lg font-bold text-zinc-100">{selectedPhoto.title}</h3>
+                <span className="text-xs font-mono text-purple-400">{selectedPhoto.category}</span>
+              </div>
             </motion.div>
           </div>
         )}
