@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, ExternalLink, X, Film, ChevronLeft, ChevronRight, Sparkles, Image as ImageIcon, Maximize2 } from "lucide-react";
 
-// Video project list sorted from newest to oldest
+// Video project list
 const VIDEO_PROJECTS = [
   {
     id: "project-1",
@@ -206,7 +206,7 @@ const VIDEO_PROJECTS = [
   },
 ];
 
-// Photo project list sorted from newest to oldest
+// Photo project list
 const PHOTO_PROJECTS = [
   {
     id: "photo-1",
@@ -273,7 +273,7 @@ const PHOTO_PROJECTS = [
   },
 ];
 
-const ITEMS_PER_PAGE = 8; // 4-column compact layout
+const ITEMS_PER_PAGE = 8; // Strictly 4x2 layout across screen sizes
 
 export default function PortfolioGrid() {
   const [activeTab, setActiveTab] = useState<"video" | "photo">("video");
@@ -300,16 +300,16 @@ export default function PortfolioGrid() {
   };
 
   return (
-    <section id="work" className="py-24 px-6 sm:px-12 max-w-7xl mx-auto w-full z-10 relative scroll-mt-24">
+    <section id="work" className="py-16 sm:py-24 px-3 sm:px-12 max-w-7xl mx-auto w-full z-10 relative scroll-mt-24">
       
       {/* Section Header */}
-      <div className="mb-12 text-left flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6">
+      <div className="mb-8 sm:mb-12 text-left flex flex-row justify-between items-end gap-2">
         <div>
           <motion.span 
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            className="text-purple-400 font-mono text-xs sm:text-sm tracking-wider uppercase block mb-2"
+            className="text-purple-400 font-mono text-[10px] sm:text-sm tracking-wider uppercase block mb-1 sm:mb-2"
           >
             // Selected Works
           </motion.span>
@@ -318,37 +318,37 @@ export default function PortfolioGrid() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="text-4xl md:text-6xl font-extrabold tracking-tight text-zinc-100"
+            className="text-2xl sm:text-6xl font-extrabold tracking-tight text-zinc-100"
           >
             Featured Projects
           </motion.h2>
-          <p className="text-xs font-mono text-zinc-500 mt-2">
+          <p className="text-[9px] sm:text-xs font-mono text-zinc-500 mt-1 sm:mt-2">
             {activeTab === "video" ? "Youtube Shorts, TikTok Videos, and Instagram Reels." : "Commission Designs & Graphics."}
           </p>
         </div>
 
         {/* Category Switcher Tab */}
-        <div className="flex gap-1.5 p-1 bg-zinc-900/80 border border-zinc-800 rounded-full backdrop-blur-md shrink-0">
+        <div className="flex gap-1 p-0.5 sm:p-1 bg-zinc-900/80 border border-zinc-800 rounded-full backdrop-blur-md shrink-0">
           <button
             onClick={() => handleTabSwitch("video")}
-            className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-mono transition-all ${
+            className={`flex items-center gap-1 px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-mono transition-all ${
               activeTab === "video"
                 ? "bg-zinc-100 text-zinc-950 font-bold shadow-md scale-105"
                 : "text-zinc-400 hover:text-zinc-200"
             }`}
           >
-            <Film size={13} />
+            <Film size={11} className="sm:w-3.5 sm:h-3.5" />
             <span>Video</span>
           </button>
           <button
             onClick={() => handleTabSwitch("photo")}
-            className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-mono transition-all ${
+            className={`flex items-center gap-1 px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-mono transition-all ${
               activeTab === "photo"
                 ? "bg-zinc-100 text-zinc-950 font-bold shadow-md scale-105"
                 : "text-zinc-400 hover:text-zinc-200"
             }`}
           >
-            <ImageIcon size={13} />
+            <ImageIcon size={11} className="sm:w-3.5 sm:h-3.5" />
             <span>Photo</span>
           </button>
         </div>
@@ -357,17 +357,19 @@ export default function PortfolioGrid() {
       {/* VIDEO TAB CONTENT */}
       {activeTab === "video" ? (
         <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mb-12">
+          {/* Strictly 4-Column Grid on Mobile and Desktop */}
+          <div className="grid grid-cols-4 gap-1.5 sm:gap-5 mb-8 sm:mb-12">
             {(currentItems as typeof VIDEO_PROJECTS).map((project) => (
               <motion.div
                 key={project.id}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4 }}
-                whileHover={{ y: -6 }}
+                transition={{ duration: 0.3 }}
+                whileHover={{ y: -4 }}
                 onClick={() => setSelectedVideo(project)}
-                className="group glass-card rounded-2xl flex flex-col justify-between min-h-[230px] cursor-pointer hover:border-purple-500/50 transition-all shadow-xl relative overflow-hidden p-5"
+                className="group glass-card rounded-xl sm:rounded-2xl flex flex-col justify-between min-h-[140px] sm:min-h-[230px] cursor-pointer hover:border-purple-500/50 transition-all shadow-xl relative overflow-hidden p-2 sm:p-5"
               >
+                {/* Background Thumbnail */}
                 {project.thumbnail && (
                   <div className="absolute inset-0 z-0 bg-zinc-900">
                     <img
@@ -382,25 +384,27 @@ export default function PortfolioGrid() {
                   </div>
                 )}
 
+                {/* Top Bar */}
                 <div className="flex justify-between items-center z-10 relative">
-                  <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-zinc-950/80 border border-zinc-800 text-[10px] text-zinc-300 font-medium backdrop-blur-md">
-                    <Film size={11} className="text-purple-400" />
-                    {project.platform}
+                  <span className="flex items-center gap-0.5 px-1.5 sm:px-2.5 py-0.5 rounded-full bg-zinc-950/80 border border-zinc-800 text-[8px] sm:text-[10px] text-zinc-300 font-medium backdrop-blur-md">
+                    <Film size={8} className="text-purple-400 sm:w-2.5 sm:h-2.5" />
+                    <span className="truncate max-w-[40px] sm:max-w-none">{project.platform}</span>
                   </span>
 
-                  <div className="w-7 h-7 rounded-full bg-zinc-950/80 border border-zinc-800 flex items-center justify-center text-zinc-300 group-hover:text-white group-hover:bg-purple-600 transition-all shadow-md backdrop-blur-md">
-                    <Play size={12} className="fill-current ml-0.5" />
+                  <div className="w-5 h-5 sm:w-7 sm:h-7 rounded-full bg-zinc-950/80 border border-zinc-800 flex items-center justify-center text-zinc-300 group-hover:text-white group-hover:bg-purple-600 transition-all shadow-md backdrop-blur-md">
+                    <Play size={9} className="fill-current ml-0.5 sm:w-3 sm:h-3" />
                   </div>
                 </div>
 
-                <div className="mt-auto pt-6 z-10 relative text-left">
-                  <span className="text-[10px] font-mono text-purple-400 uppercase tracking-wider block mb-0.5">
+                {/* Bottom Info */}
+                <div className="mt-auto pt-3 sm:pt-6 z-10 relative text-left">
+                  <span className="text-[7px] sm:text-[10px] font-mono text-purple-400 uppercase tracking-wider block mb-0.5 truncate">
                     {project.category}
                   </span>
-                  <h3 className="text-xl font-extrabold text-zinc-100 group-hover:text-white mb-0.5 tracking-tight truncate">
+                  <h3 className="text-xs sm:text-xl font-extrabold text-zinc-100 group-hover:text-white mb-0.5 tracking-tight truncate">
                     {project.title}
                   </h3>
-                  <p className="text-zinc-400 text-[11px] font-mono">
+                  <p className="text-zinc-400 text-[8px] sm:text-[11px] font-mono truncate">
                     {project.date}
                   </p>
                 </div>
@@ -408,31 +412,32 @@ export default function PortfolioGrid() {
             ))}
 
             {currentPage === totalPages && (
-              <div className="glass-card rounded-2xl flex flex-col items-center justify-center text-center p-5 min-h-[230px] border border-zinc-800/80 bg-zinc-900/30">
-                <div className="w-9 h-9 rounded-full bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-2 shadow-lg">
-                  <Sparkles size={16} />
+              <div className="glass-card rounded-xl sm:rounded-2xl flex flex-col items-center justify-center text-center p-2 sm:p-5 min-h-[140px] sm:min-h-[230px] border border-zinc-800/80 bg-zinc-900/30">
+                <div className="w-6 h-6 sm:w-9 sm:h-9 rounded-full bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-1 sm:mb-2 shadow-lg">
+                  <Sparkles size={12} className="sm:w-4 sm:h-4" />
                 </div>
-                <h4 className="text-base font-bold text-zinc-200">... and many more</h4>
-                <p className="text-[11px] text-zinc-500 font-mono mt-0.5">Additional client media archive</p>
+                <h4 className="text-[10px] sm:text-base font-bold text-zinc-200">... and many more</h4>
+                <p className="text-[7px] sm:text-[11px] text-zinc-500 font-mono mt-0.5">Additional media archive</p>
               </div>
             )}
           </div>
 
+          {/* Pagination Controls */}
           {totalPages > 1 && (
-            <div className="flex justify-center items-center gap-2">
+            <div className="flex justify-center items-center gap-1.5 sm:gap-2">
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="p-2 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                className="p-1.5 sm:p-2 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
               >
-                <ChevronLeft size={18} />
+                <ChevronLeft size={14} className="sm:w-4 sm:h-4" />
               </button>
 
               {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                 <button
                   key={page}
                   onClick={() => handlePageChange(page)}
-                  className={`w-9 h-9 text-xs font-mono rounded-full border transition-all ${
+                  className={`w-7 h-7 sm:w-9 sm:h-9 text-[10px] sm:text-xs font-mono rounded-full border transition-all ${
                     currentPage === page
                       ? "bg-zinc-100 text-zinc-950 border-white font-bold scale-105"
                       : "bg-zinc-900/80 text-zinc-400 border-zinc-800 hover:border-zinc-700 hover:text-white"
@@ -445,9 +450,9 @@ export default function PortfolioGrid() {
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className="p-2 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                className="p-1.5 sm:p-2 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
               >
-                <ChevronRight size={18} />
+                <ChevronRight size={14} className="sm:w-4 sm:h-4" />
               </button>
             </div>
           )}
@@ -455,16 +460,16 @@ export default function PortfolioGrid() {
       ) : (
         /* PHOTO TAB CONTENT */
         <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mb-12">
+          <div className="grid grid-cols-4 gap-1.5 sm:gap-5 mb-8 sm:mb-12">
             {(currentItems as typeof PHOTO_PROJECTS).map((photo) => (
               <motion.div
                 key={photo.id}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4 }}
-                whileHover={{ y: -6 }}
+                transition={{ duration: 0.3 }}
+                whileHover={{ y: -4 }}
                 onClick={() => setSelectedPhoto(photo)}
-                className="group glass-card rounded-2xl flex flex-col justify-between min-h-[230px] cursor-pointer hover:border-purple-500/50 transition-all shadow-xl relative overflow-hidden p-5"
+                className="group glass-card rounded-xl sm:rounded-2xl flex flex-col justify-between min-h-[140px] sm:min-h-[230px] cursor-pointer hover:border-purple-500/50 transition-all shadow-xl relative overflow-hidden p-2 sm:p-5"
               >
                 {/* Background Image */}
                 <div className="absolute inset-0 z-0 bg-zinc-900">
@@ -481,22 +486,22 @@ export default function PortfolioGrid() {
 
                 {/* Top Bar Badge: Canva */}
                 <div className="flex justify-between items-center z-10 relative">
-                  <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-zinc-950/80 border border-zinc-800 text-[10px] text-zinc-300 font-medium backdrop-blur-md">
-                    <ImageIcon size={11} className="text-purple-400" />
+                  <span className="flex items-center gap-0.5 px-1.5 sm:px-2.5 py-0.5 rounded-full bg-zinc-950/80 border border-zinc-800 text-[8px] sm:text-[10px] text-zinc-300 font-medium backdrop-blur-md">
+                    <ImageIcon size={8} className="text-purple-400 sm:w-2.5 sm:h-2.5" />
                     {photo.platform}
                   </span>
 
-                  <div className="w-7 h-7 rounded-full bg-zinc-950/80 border border-zinc-800 flex items-center justify-center text-zinc-300 group-hover:text-white group-hover:bg-purple-600 transition-all shadow-md backdrop-blur-md">
-                    <Maximize2 size={12} />
+                  <div className="w-5 h-5 sm:w-7 sm:h-7 rounded-full bg-zinc-950/80 border border-zinc-800 flex items-center justify-center text-zinc-300 group-hover:text-white group-hover:bg-purple-600 transition-all shadow-md backdrop-blur-md">
+                    <Maximize2 size={9} className="sm:w-3 sm:h-3" />
                   </div>
                 </div>
 
-                {/* Bottom Info: Commission + Date (No big creator title) */}
-                <div className="mt-auto pt-6 z-10 relative text-left">
-                  <span className="text-[11px] font-mono text-purple-400 uppercase tracking-wider block mb-0.5">
+                {/* Bottom Info: Commission + Date */}
+                <div className="mt-auto pt-3 sm:pt-6 z-10 relative text-left">
+                  <span className="text-[8px] sm:text-[11px] font-mono text-purple-400 uppercase tracking-wider block mb-0.5">
                     {photo.category}
                   </span>
-                  <p className="text-zinc-400 text-xs font-mono">
+                  <p className="text-zinc-400 text-[8px] sm:text-xs font-mono truncate">
                     {photo.date}
                   </p>
                 </div>
@@ -504,31 +509,31 @@ export default function PortfolioGrid() {
             ))}
 
             {currentPage === totalPages && (
-              <div className="glass-card rounded-2xl flex flex-col items-center justify-center text-center p-5 min-h-[230px] border border-zinc-800/80 bg-zinc-900/30">
-                <div className="w-9 h-9 rounded-full bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-2 shadow-lg">
-                  <Sparkles size={16} />
+              <div className="glass-card rounded-xl sm:rounded-2xl flex flex-col items-center justify-center text-center p-2 sm:p-5 min-h-[140px] sm:min-h-[230px] border border-zinc-800/80 bg-zinc-900/30">
+                <div className="w-6 h-6 sm:w-9 sm:h-9 rounded-full bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-1 sm:mb-2 shadow-lg">
+                  <Sparkles size={12} className="sm:w-4 sm:h-4" />
                 </div>
-                <h4 className="text-base font-bold text-zinc-200">... and many more</h4>
-                <p className="text-[11px] text-zinc-500 font-mono mt-0.5">Additional graphics archive</p>
+                <h4 className="text-[10px] sm:text-base font-bold text-zinc-200">... and many more</h4>
+                <p className="text-[7px] sm:text-[11px] text-zinc-500 font-mono mt-0.5">Additional graphics archive</p>
               </div>
             )}
           </div>
 
           {totalPages > 1 && (
-            <div className="flex justify-center items-center gap-2">
+            <div className="flex justify-center items-center gap-1.5 sm:gap-2">
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="p-2 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                className="p-1.5 sm:p-2 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
               >
-                <ChevronLeft size={18} />
+                <ChevronLeft size={14} className="sm:w-4 sm:h-4" />
               </button>
 
               {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                 <button
                   key={page}
                   onClick={() => handlePageChange(page)}
-                  className={`w-9 h-9 text-xs font-mono rounded-full border transition-all ${
+                  className={`w-7 h-7 sm:w-9 sm:h-9 text-[10px] sm:text-xs font-mono rounded-full border transition-all ${
                     currentPage === page
                       ? "bg-zinc-100 text-zinc-950 border-white font-bold scale-105"
                       : "bg-zinc-900/80 text-zinc-400 border-zinc-800 hover:border-zinc-700 hover:text-white"
@@ -541,9 +546,9 @@ export default function PortfolioGrid() {
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className="p-2 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                className="p-1.5 sm:p-2 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
               >
-                <ChevronRight size={18} />
+                <ChevronRight size={14} className="sm:w-4 sm:h-4" />
               </button>
             </div>
           )}
