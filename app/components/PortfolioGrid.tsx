@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, ExternalLink, X, Film, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
+import { Play, ExternalLink, X, Film, ChevronLeft, ChevronRight, Sparkles, Image as ImageIcon, Camera } from "lucide-react";
 
 // Complete project list sorted from newest (top) to oldest (bottom)
 const PROJECTS = [
@@ -209,6 +209,7 @@ const PROJECTS = [
 const ITEMS_PER_PAGE = 8; // 4-column compact layout
 
 export default function PortfolioGrid() {
+  const [activeTab, setActiveTab] = useState<"video" | "photo">("video");
   const [selectedProject, setSelectedProject] = useState<typeof PROJECTS[0] | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -224,11 +225,16 @@ export default function PortfolioGrid() {
     }
   };
 
+  const handleTabSwitch = (tab: "video" | "photo") => {
+    setActiveTab(tab);
+    setCurrentPage(1);
+  };
+
   return (
     <section id="work" className="py-24 px-6 sm:px-12 max-w-7xl mx-auto w-full z-10 relative scroll-mt-24">
       
       {/* Section Header */}
-      <div className="mb-12 text-left flex justify-between items-end">
+      <div className="mb-12 text-left flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6">
         <div>
           <motion.span 
             initial={{ opacity: 0 }}
@@ -247,112 +253,161 @@ export default function PortfolioGrid() {
           >
             Featured Projects
           </motion.h2>
+          <p className="text-xs font-mono text-zinc-500 mt-2">
+            Youtube Shorts, TikTok Videos, and Instagram Reels.
+          </p>
         </div>
 
-        <span className="text-xs font-mono text-zinc-500 hidden sm:block">
-          Showing {startIndex + 1}–{Math.min(startIndex + ITEMS_PER_PAGE, PROJECTS.length)} of {PROJECTS.length}
-        </span>
+        {/* Category Switcher Tab (Replaces old counter position) */}
+        <div className="flex gap-1.5 p-1 bg-zinc-900/80 border border-zinc-800 rounded-full backdrop-blur-md shrink-0">
+          <button
+            onClick={() => handleTabSwitch("video")}
+            className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-mono transition-all ${
+              activeTab === "video"
+                ? "bg-zinc-100 text-zinc-950 font-bold shadow-md scale-105"
+                : "text-zinc-400 hover:text-zinc-200"
+            }`}
+          >
+            <Film size={13} />
+            <span>Video</span>
+          </button>
+          <button
+            onClick={() => handleTabSwitch("photo")}
+            className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-mono transition-all ${
+              activeTab === "photo"
+                ? "bg-zinc-100 text-zinc-950 font-bold shadow-md scale-105"
+                : "text-zinc-400 hover:text-zinc-200"
+            }`}
+          >
+            <ImageIcon size={13} />
+            <span>Photo</span>
+          </button>
+        </div>
       </div>
 
-      {/* Grid List — Neat & Compact 4-Column Layout */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mb-12">
-        {currentProjects.map((project) => (
-          <motion.div
-            key={project.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            whileHover={{ y: -6 }}
-            onClick={() => setSelectedProject(project)}
-            className="group glass-card rounded-2xl flex flex-col justify-between min-h-[230px] cursor-pointer hover:border-purple-500/50 transition-all shadow-xl relative overflow-hidden p-5"
-          >
-            {/* Background Thumbnail */}
-            {project.thumbnail && (
-              <div className="absolute inset-0 z-0 bg-zinc-900">
-                <img
-                  src={project.thumbnail}
-                  alt={project.title}
-                  className="w-full h-full object-cover opacity-40 group-hover:opacity-55 group-hover:scale-105 transition-all duration-500"
-                  onError={(e) => {
-                    (e.target as HTMLElement).style.display = 'none';
-                  }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/70 to-zinc-950/20" />
+      {/* VIDEO TAB CONTENT */}
+      {activeTab === "video" ? (
+        <>
+          {/* Grid List — Neat & Compact 4-Column Layout */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mb-12">
+            {currentProjects.map((project) => (
+              <motion.div
+                key={project.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+                whileHover={{ y: -6 }}
+                onClick={() => setSelectedProject(project)}
+                className="group glass-card rounded-2xl flex flex-col justify-between min-h-[230px] cursor-pointer hover:border-purple-500/50 transition-all shadow-xl relative overflow-hidden p-5"
+              >
+                {/* Background Thumbnail */}
+                {project.thumbnail && (
+                  <div className="absolute inset-0 z-0 bg-zinc-900">
+                    <img
+                      src={project.thumbnail}
+                      alt={project.title}
+                      className="w-full h-full object-cover opacity-40 group-hover:opacity-55 group-hover:scale-105 transition-all duration-500"
+                      onError={(e) => {
+                        (e.target as HTMLElement).style.display = 'none';
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/70 to-zinc-950/20" />
+                  </div>
+                )}
+
+                {/* Top Bar */}
+                <div className="flex justify-between items-center z-10 relative">
+                  <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-zinc-950/80 border border-zinc-800 text-[10px] text-zinc-300 font-medium backdrop-blur-md">
+                    <Film size={11} className="text-purple-400" />
+                    {project.platform}
+                  </span>
+
+                  <div className="w-7 h-7 rounded-full bg-zinc-950/80 border border-zinc-800 flex items-center justify-center text-zinc-300 group-hover:text-white group-hover:bg-purple-600 transition-all shadow-md backdrop-blur-md">
+                    <Play size={12} className="fill-current ml-0.5" />
+                  </div>
+                </div>
+
+                {/* Bottom Info */}
+                <div className="mt-auto pt-6 z-10 relative text-left">
+                  <span className="text-[10px] font-mono text-purple-400 uppercase tracking-wider block mb-0.5">
+                    {project.category}
+                  </span>
+                  <h3 className="text-xl font-extrabold text-zinc-100 group-hover:text-white mb-0.5 tracking-tight truncate">
+                    {project.title}
+                  </h3>
+                  <p className="text-zinc-400 text-[11px] font-mono">
+                    {project.date}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+
+            {/* End-of-List Indicator Card (Renders on the last page) */}
+            {currentPage === totalPages && (
+              <div className="glass-card rounded-2xl flex flex-col items-center justify-center text-center p-5 min-h-[230px] border border-zinc-800/80 bg-zinc-900/30">
+                <div className="w-9 h-9 rounded-full bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-2 shadow-lg">
+                  <Sparkles size={16} />
+                </div>
+                <h4 className="text-base font-bold text-zinc-200">... and many more</h4>
+                <p className="text-[11px] text-zinc-500 font-mono mt-0.5">Additional client media archive</p>
               </div>
             )}
-
-            {/* Top Bar */}
-            <div className="flex justify-between items-center z-10 relative">
-              <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-zinc-950/80 border border-zinc-800 text-[10px] text-zinc-300 font-medium backdrop-blur-md">
-                <Film size={11} className="text-purple-400" />
-                {project.platform}
-              </span>
-
-              <div className="w-7 h-7 rounded-full bg-zinc-950/80 border border-zinc-800 flex items-center justify-center text-zinc-300 group-hover:text-white group-hover:bg-purple-600 transition-all shadow-md backdrop-blur-md">
-                <Play size={12} className="fill-current ml-0.5" />
-              </div>
-            </div>
-
-            {/* Bottom Info */}
-            <div className="mt-auto pt-6 z-10 relative text-left">
-              <span className="text-[10px] font-mono text-purple-400 uppercase tracking-wider block mb-0.5">
-                {project.category}
-              </span>
-              <h3 className="text-xl font-extrabold text-zinc-100 group-hover:text-white mb-0.5 tracking-tight truncate">
-                {project.title}
-              </h3>
-              <p className="text-zinc-400 text-[11px] font-mono">
-                {project.date}
-              </p>
-            </div>
-          </motion.div>
-        ))}
-
-        {/* End-of-List Indicator Card (Renders on the last page) */}
-        {currentPage === totalPages && (
-          <div className="glass-card rounded-2xl flex flex-col items-center justify-center text-center p-5 min-h-[230px] border border-zinc-800/80 bg-zinc-900/30">
-            <div className="w-9 h-9 rounded-full bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-2 shadow-lg">
-              <Sparkles size={16} />
-            </div>
-            <h4 className="text-base font-bold text-zinc-200">... and many more</h4>
-            <p className="text-[11px] text-zinc-500 font-mono mt-0.5">Additional client media archive</p>
           </div>
-        )}
-      </div>
 
-      {/* Pagination Controls */}
-      {totalPages > 1 && (
-        <div className="flex justify-center items-center gap-2">
-          <button
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="p-2 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
-          >
-            <ChevronLeft size={18} />
-          </button>
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="flex justify-center items-center gap-2">
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="p-2 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+              >
+                <ChevronLeft size={18} />
+              </button>
 
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-            <button
-              key={page}
-              onClick={() => handlePageChange(page)}
-              className={`w-9 h-9 text-xs font-mono rounded-full border transition-all ${
-                currentPage === page
-                  ? "bg-zinc-100 text-zinc-950 border-white font-bold scale-105"
-                  : "bg-zinc-900/80 text-zinc-400 border-zinc-800 hover:border-zinc-700 hover:text-white"
-              }`}
-            >
-              {page}
-            </button>
-          ))}
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <button
+                  key={page}
+                  onClick={() => handlePageChange(page)}
+                  className={`w-9 h-9 text-xs font-mono rounded-full border transition-all ${
+                    currentPage === page
+                      ? "bg-zinc-100 text-zinc-950 border-white font-bold scale-105"
+                      : "bg-zinc-900/80 text-zinc-400 border-zinc-800 hover:border-zinc-700 hover:text-white"
+                  }`}
+                >
+                  {page}
+                </button>
+              ))}
 
-          <button
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="p-2 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
-          >
-            <ChevronRight size={18} />
-          </button>
-        </div>
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="p-2 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+              >
+                <ChevronRight size={18} />
+              </button>
+            </div>
+          )}
+        </>
+      ) : (
+        /* PHOTO TAB CONTENT (Graphics & Visual Design Showcase) */
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="glass-card rounded-3xl p-10 sm:p-14 flex flex-col items-center justify-center text-center min-h-[320px] max-w-full border border-purple-500/20 bg-purple-500/5 shadow-2xl"
+        >
+          <div className="w-14 h-14 rounded-2xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-5 shadow-lg shadow-purple-500/5">
+            <Camera size={28} />
+          </div>
+
+          <h3 className="text-2xl font-bold text-zinc-100 mb-2">
+            Graphic Design Showcase Coming Soon
+          </h3>
+          
+          <p className="text-zinc-400 text-sm max-w-md font-light leading-relaxed">
+            Arya is curating the graphic design and visual asset gallery. Check back shortly!
+          </p>
+        </motion.div>
       )}
 
       {/* Video Embed Modal */}
