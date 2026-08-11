@@ -3,19 +3,18 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, ExternalLink, X, Film } from "lucide-react";
-import Image from "next/image";
 
 const PROJECTS = [
   {
     id: "project-1",
-    title: "Client Visual Showcase",
-    client: "Instagram Reel Content",
+    platform: "Instagram",
+    category: "Instagram Reel",
+    title: "@kroma.lab",
+    date: "May 7, 2026",
     type: "instagram",
     embedId: "DYCd6LHyXtT",
     directUrl: "https://www.instagram.com/reel/DYCd6LHyXtT/",
-    thumbnail: "https://i.snapcdn.app/photo?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJodHRwczovL3Njb250ZW50LmNkbmluc3RhZ3JhbS5jb20vdi90NTEuODI3ODctMTUvNjg1MzgwMzU4XzE4MTEyMTYxNDcyODc2NjI1XzI2ODM1NTI0NTA3NzUxMjU1Nl9uLmpwZz9zdHA9ZHN0LWpwZ19lMTVfdHQ2Jl9uY19jYXQ9MTAxJmlnX2NhY2hlX2tleT1Nemc1TVRnd05EVTJPVEF5TVRnd056UTBNekU0TVRFeU1UWXhORFk1T0RjMk5qSTEuMy1jY2I3LTUmY2NiPTctNSZfbmNfc2lkPTU4Y2RhZCZlZmc9ZXlKMlpXNWpiMlJsWDNSaFp5STZJa05NU1ZCVExuaHdhV1J6TGpFd09EQXVjMlJ5TG5acFpHVnZYMlJsWm1GMWJIUmZZMjkyWlhKZlpuSmhiV1V1UXpNaWZRJTNEJTNEJl9uY19vaGM9TjZ2ZnlSeC04Rk1RN2tOdndFOUtRSE8mX25jX29jPUFkcTk3alhlQ0F3U05HRTNWem5XanJBYVVySEItT0IyLUxIcEFPbG1va01QUHdfMlJNbE1SZThudXhoQXF0aGNJWTQmX25jX2FkPXotbSZfbmNfY2lkPTAmX25jX3p0PTIzJl9uY19odD1zY29udGVudC1sZ2EzLTIuY2RuaW5zdGFncmFtLmNvbSZfbmNfZ2lkPWVhUGItLTh5TEVfLU91UFoxMEVraEEmX25jX3NzPTdhMjJlJm9oPTAwX0FRRndsdkp2aHAzbDc3MmZfQnY0Zk4xbXJWWk5odU04R2lya2hjNk5LNHFkR3cmb2U9NkE4MENENjciLCJmaWxlbmFtZSI6IlRodW1ibmFpbF82ODUzODAzNThfMTgxMTIxNjE0NzI4NzY2MjVfMjY4MzU1MjQ1MDc3NTEyNTU2X24uanBnIiwibmJmIjoxNzg2NDQ0NDQyLCJleHAiOjE3ODY0NDgwNDIsImlhdCI6MTc4NjQ0NDQ0Mn0.zgQSYbAvkOKeA9GM36Zp8DDyPKJzyapTnxKToNTWX5g",
-    tags: ["Instagram Reels", "Video Editing", "Motion"],
-    desc: "Short-form client visual content crafted for social engagement and high-impact motion aesthetics.",
+    thumbnail: "https://i.snapcdn.app/photo?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJodHRwczovL3Njb250ZW50LmNkbmluc3RhZ3JhbS5jb20vdi90NTEuODI3ODctMTUvNjg1MzgwMzU4XzE4MTEyMTYxNDcyODc2NjI1XzI2ODM1NTI0NTA3NzUxMjU1Nl9uLmpwZz9zdHA9ZHN0LWpwZ1_eMTVfdHQ2Jl9uY19jYXQ9MTAxJmlnX2NhY2hlX2tleT1Nemc1TVRnd05EVTJPVEF5TVRnd056UTBNekU0TVRFeU1UWXhORFk1T0RjMk5qSTEuMy1jY2I3LTUmY2NiPTctNSZfbmNfc2lkPTU4Y2RhZCZlZmc9ZXlKMlpXNWpiMlJsWDNSaFp5STZJa05NU1ZCVExuaHdhV1J6TGpFd09EQXVjMlJ5TG5acFpHVnZYMlJsWm1GMWJIUmZZMjkyWlhKZlpuSmhiV1V1UXpNaWZRJTNEJTNEJl9uY19vaGM9TjZ2ZnlSeC04Rk1RN2tOdndFOUtRSE8mX25jX29jPUFkcTk3alhlQ0F3U05HRTNWem5XanJBYVVySEItT0IyLUxIcEFPbG1va01QUHdfMlJNbE1SZThudXhoQXF0aGNJWTQmX25jX2FkPXotbSZfbmNfY2lkPTAmX25jX3p0PTIzJl9uY19odD1zY29udGVudC1sZ2EzLTIuY2RuaW5zdGFncmFtLmNvbSZfbmNfZ2lkPWVhUGItLTh5TEVfLU91UFoxMEVraEEmX25jX3NzPTdhMjJlJm9oPTAwX0FRRndsdkp2aHAzbDc3MmZfQnY0Zk4xbXJWWk5odU04R2lya2hjNk5LNHFkR3cmb2U9NkE4MENENjciLCJmaWxlbmFtZSI6IlRodW1ibmFpbF82ODUzODAzNThfMTgxMTIxNjE0NzI4NzY2MjVfMjY4MzU1MjQ1MDc3NTEyNTU2X24uanBnIiwibmJmIjoxNzg2NDQ0NDQyLCJleHAiOjE3ODY0NDgwNDIsImlhdCI6MTc4NjQ0NDgwNDJ9.zgQSYbAvkOKeA9GM36Zp8DDyPKJzyapTnxKToNTWX5g",
   },
 ];
 
@@ -56,7 +55,7 @@ export default function PortfolioGrid() {
             viewport={{ once: true }}
             whileHover={{ y: -6 }}
             onClick={() => setSelectedProject(project)}
-            className="group glass-card rounded-3xl flex flex-col justify-between min-h-[360px] cursor-pointer hover:border-purple-500/50 transition-all shadow-xl relative overflow-hidden p-8"
+            className="group glass-card rounded-3xl flex flex-col justify-between min-h-[300px] cursor-pointer hover:border-purple-500/50 transition-all shadow-xl relative overflow-hidden p-8"
           >
             {/* Background Thumbnail Image */}
             {project.thumbnail && (
@@ -64,16 +63,17 @@ export default function PortfolioGrid() {
                 <img
                   src={project.thumbnail}
                   alt={project.title}
-                  className="w-full h-full object-cover opacity-40 group-hover:opacity-55 group-hover:scale-105 transition-all duration-500"
+                  className="w-full h-full object-cover opacity-35 group-hover:opacity-50 group-hover:scale-105 transition-all duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/70 to-zinc-950/20" />
               </div>
             )}
 
+            {/* Top Bar: Platform Tag & Play Button */}
             <div className="flex justify-between items-center z-10 relative">
-              <span className="flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-950/80 border border-zinc-800 text-xs text-zinc-300 font-medium backdrop-blur-md">
+              <span className="flex items-center gap-2 px-3.5 py-1 rounded-full bg-zinc-950/80 border border-zinc-800 text-xs text-zinc-300 font-medium backdrop-blur-md">
                 <Film size={14} className="text-purple-400" />
-                Instagram Reel
+                {project.platform}
               </span>
 
               <div className="w-10 h-10 rounded-full bg-zinc-950/80 border border-zinc-800 flex items-center justify-center text-zinc-300 group-hover:text-white group-hover:bg-purple-600 transition-all shadow-lg backdrop-blur-md">
@@ -81,24 +81,17 @@ export default function PortfolioGrid() {
               </div>
             </div>
 
-            <div className="my-auto py-8 z-10 relative">
+            {/* Main Info: Owner & Upload Date */}
+            <div className="my-auto pt-10 pb-2 z-10 relative text-left">
               <span className="text-xs font-mono text-purple-400 uppercase tracking-wider block mb-1">
-                {project.client}
+                {project.category}
               </span>
-              <h3 className="text-2xl font-bold text-zinc-100 group-hover:text-white mb-2">
+              <h3 className="text-3xl font-extrabold text-zinc-100 group-hover:text-white mb-1.5 tracking-tight">
                 {project.title}
               </h3>
-              <p className="text-zinc-300 text-sm font-light leading-relaxed line-clamp-2">
-                {project.desc}
+              <p className="text-zinc-400 text-sm font-mono">
+                {project.date}
               </p>
-            </div>
-
-            <div className="flex flex-wrap gap-2 z-10 relative">
-              {project.tags.map((tag) => (
-                <span key={tag} className="text-[11px] font-mono px-2.5 py-1 rounded-md bg-zinc-950/80 text-zinc-300 border border-zinc-800/80 backdrop-blur-md">
-                  #{tag}
-                </span>
-              ))}
             </div>
           </motion.div>
         ))}
@@ -133,11 +126,11 @@ export default function PortfolioGrid() {
                 <X size={20} />
               </button>
 
-              <h3 className="text-xl font-bold text-zinc-100 mb-1 text-center pr-8">
+              <h3 className="text-2xl font-extrabold text-zinc-100 mb-0.5 text-center pr-8">
                 {selectedProject.title}
               </h3>
               <span className="text-xs font-mono text-purple-400 mb-6 block text-center">
-                {selectedProject.client}
+                {selectedProject.category} • {selectedProject.date}
               </span>
 
               {/* Embed Iframe Container */}
@@ -156,7 +149,7 @@ export default function PortfolioGrid() {
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 px-5 py-2.5 bg-zinc-100 text-zinc-950 font-semibold text-xs rounded-full hover:bg-white transition-all"
               >
-                <span>Open Original Reel</span>
+                <span>Open Original Post</span>
                 <ExternalLink size={14} />
               </a>
             </motion.div>
