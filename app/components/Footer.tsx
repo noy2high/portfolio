@@ -1,96 +1,97 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Mail, MessageCircle, Globe, Share2, ArrowUpRight } from "lucide-react";
-
-const SOCIALS = [
-  {
-    name: "Email",
-    value: "aryasmeo@gmail.com",
-    href: "mailto:aryasmeo@gmail.com",
-    icon: Mail,
-    color: "hover:text-purple-400 hover:border-purple-500/50",
-  },
-  {
-    name: "WhatsApp",
-    value: "+62 822 9979 4279",
-    href: "https://wa.me/6282299794279",
-    icon: MessageCircle,
-    color: "hover:text-emerald-400 hover:border-emerald-500/50",
-  },
-  {
-    name: "LinkedIn",
-    value: "Arya Yonas Pratama",
-    href: "https://www.linkedin.com/in/arya-yonas-pratama-9864a6223/",
-    icon: Share2,
-    color: "hover:text-blue-400 hover:border-blue-500/50",
-  },
-  {
-    name: "GitHub",
-    value: "@noy2high",
-    href: "https://github.com/noy2high",
-    icon: Globe,
-    color: "hover:text-zinc-200 hover:border-zinc-500",
-  },
-];
+import { Mail, MessageSquare, Linkedin, Github } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer id="contact" className="py-24 px-8 md:px-16 max-w-7xl mx-auto z-10 relative border-t border-zinc-900">
+    <footer id="contact" className="py-16 sm:py-24 px-3 sm:px-12 max-w-7xl mx-auto w-full z-10 relative scroll-mt-24 border-t border-zinc-900">
       
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-12 mb-16">
-        <div>
-          <motion.span 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="text-purple-400 font-mono text-sm tracking-wider uppercase"
-          >
-            // Get In Touch
-          </motion.span>
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-4xl md:text-7xl font-extrabold tracking-tight mt-2 text-zinc-100"
-          >
-            Let's build <br /> something great.
-          </motion.h2>
-        </div>
+      <div className="mb-8 sm:mb-12 text-left">
+        <motion.span 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="text-purple-400 font-mono text-[10px] sm:text-sm tracking-wider uppercase block mb-1 sm:mb-2"
+        >
+          // Get In Touch
+        </motion.span>
+        
+        <motion.h2 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-2xl sm:text-7xl font-extrabold tracking-tight text-zinc-100 max-w-2xl"
+        >
+          Let's build something great.
+        </motion.h2>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-20">
-        {SOCIALS.map((soc) => {
-          const Icon = soc.icon;
-          return (
-            <motion.a
-              key={soc.name}
-              href={soc.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ y: -4 }}
-              className={`p-5 bg-zinc-900/50 border border-zinc-800 rounded-2xl flex flex-col justify-between min-h-[140px] transition-all group ${soc.color}`}
-            >
-              <div className="flex justify-between items-center text-zinc-400 group-hover:text-inherit">
-                <Icon size={22} />
-                <ArrowUpRight size={18} className="opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-              </div>
+      {/* Strictly 4-Column Layout across Mobile and Desktop */}
+      <div className="grid grid-cols-4 gap-2 sm:gap-6 mb-12 sm:mb-16">
+        <a
+          href="mailto:aryasmeo@gmail.com"
+          className="glass-card p-2.5 sm:p-6 rounded-xl sm:rounded-2xl flex flex-col justify-between hover:border-purple-500/50 transition-all group min-h-[100px] sm:min-h-0"
+        >
+          <Mail className="text-zinc-400 group-hover:text-purple-400 transition-colors mb-2 sm:mb-6 w-4 h-4 sm:w-6 sm:h-6" />
+          <div>
+            <span className="text-[8px] sm:text-xs font-mono text-zinc-500 block mb-0.5">Email</span>
+            <span className="text-[9px] sm:text-sm font-semibold text-zinc-200 group-hover:text-white transition-colors block truncate">
+              aryasmeo@gmail.com
+            </span>
+          </div>
+        </a>
 
-              <div>
-                <span className="text-xs font-mono text-zinc-500 uppercase tracking-wider block mb-1">
-                  {soc.name}
-                </span>
-                <span className="text-sm font-semibold text-zinc-200 group-hover:text-white truncate block">
-                  {soc.value}
-                </span>
-              </div>
-            </motion.a>
-          );
-        })}
+        <a
+          href="https://wa.me/6282299794279"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="glass-card p-2.5 sm:p-6 rounded-xl sm:rounded-2xl flex flex-col justify-between hover:border-purple-500/50 transition-all group min-h-[100px] sm:min-h-0"
+        >
+          <MessageSquare className="text-zinc-400 group-hover:text-purple-400 transition-colors mb-2 sm:mb-6 w-4 h-4 sm:w-6 sm:h-6" />
+          <div>
+            <span className="text-[8px] sm:text-xs font-mono text-zinc-500 block mb-0.5">WhatsApp</span>
+            <span className="text-[9px] sm:text-sm font-semibold text-zinc-200 group-hover:text-white transition-colors block truncate">
+              +62 822 9979 4279
+            </span>
+          </div>
+        </a>
+
+        <a
+          href="https://linkedin.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="glass-card p-2.5 sm:p-6 rounded-xl sm:rounded-2xl flex flex-col justify-between hover:border-purple-500/50 transition-all group min-h-[100px] sm:min-h-0"
+        >
+          <Linkedin className="text-zinc-400 group-hover:text-purple-400 transition-colors mb-2 sm:mb-6 w-4 h-4 sm:w-6 sm:h-6" />
+          <div>
+            <span className="text-[8px] sm:text-xs font-mono text-zinc-500 block mb-0.5">LinkedIn</span>
+            <span className="text-[9px] sm:text-sm font-semibold text-zinc-200 group-hover:text-white transition-colors block truncate">
+              Arya Yonas Pratama
+            </span>
+          </div>
+        </a>
+
+        <a
+          href="https://github.com/noy2high"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="glass-card p-2.5 sm:p-6 rounded-xl sm:rounded-2xl flex flex-col justify-between hover:border-purple-500/50 transition-all group min-h-[100px] sm:min-h-0"
+        >
+          <Github className="text-zinc-400 group-hover:text-purple-400 transition-colors mb-2 sm:mb-6 w-4 h-4 sm:w-6 sm:h-6" />
+          <div>
+            <span className="text-[8px] sm:text-xs font-mono text-zinc-500 block mb-0.5">GitHub</span>
+            <span className="text-[9px] sm:text-sm font-semibold text-zinc-200 group-hover:text-white transition-colors block truncate">
+              @noy2high
+            </span>
+          </div>
+        </a>
       </div>
 
-      <div className="flex justify-center items-center text-xs text-zinc-600 font-mono pt-8 border-t border-zinc-900/80">
-        <span>2025 ARYA. All rights reserved.</span>
+      <div className="flex flex-row justify-between items-center text-[9px] sm:text-xs text-zinc-500 pt-6 sm:pt-8 border-t border-zinc-900/60 font-mono">
+        <span>© 2026 ARYA. All rights reserved.</span>
+        <span>Built with Next.js & Tailwind</span>
       </div>
 
     </footer>
