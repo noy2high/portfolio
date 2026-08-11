@@ -95,7 +95,6 @@ export default function Footer() {
 
       <div className="flex flex-row justify-between items-center text-[9px] sm:text-xs text-zinc-500 pt-6 sm:pt-8 border-t border-zinc-900/60 font-mono">
         <span>© 2026 ARYA. All rights reserved.</span>
-        <span>Built with Next.js & Tailwind</span>
       </div>
 
     </footer>
