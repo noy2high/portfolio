@@ -20,7 +20,7 @@ const PROJECTS = [
   {
     id: "project-2",
     platform: "Instagram",
-    category: "Instagram Post",
+    category: "Instagram Reel",
     title: "@kroma.space",
     date: "April 11, 2026",
     type: "instagram",
@@ -31,7 +31,7 @@ const PROJECTS = [
   {
     id: "project-3",
     platform: "Instagram",
-    category: "Instagram Post",
+    category: "Instagram Reel",
     title: "@kroma.space",
     date: "March 19, 2026",
     type: "instagram",
@@ -90,8 +90,8 @@ export default function PortfolioGrid() {
         </motion.h2>
       </div>
 
-      {/* Grid List */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {/* Grid List — Compact 3-Column Layout */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {PROJECTS.map((project) => (
           <motion.div
             key={project.id}
@@ -100,9 +100,9 @@ export default function PortfolioGrid() {
             viewport={{ once: true }}
             whileHover={{ y: -6 }}
             onClick={() => setSelectedProject(project)}
-            className="group glass-card rounded-3xl flex flex-col justify-between min-h-[340px] cursor-pointer hover:border-purple-500/50 transition-all shadow-xl relative overflow-hidden p-8"
+            className="group glass-card rounded-2xl flex flex-col justify-between min-h-[260px] cursor-pointer hover:border-purple-500/50 transition-all shadow-xl relative overflow-hidden p-6"
           >
-            {/* Local Image Background */}
+            {/* Background Thumbnail */}
             {project.thumbnail && (
               <div className="absolute inset-0 z-0 bg-zinc-900">
                 <img
@@ -114,27 +114,27 @@ export default function PortfolioGrid() {
               </div>
             )}
 
-            {/* Top Bar: Platform Tag & Play Button */}
+            {/* Top Bar */}
             <div className="flex justify-between items-center z-10 relative">
-              <span className="flex items-center gap-2 px-3.5 py-1 rounded-full bg-zinc-950/80 border border-zinc-800 text-xs text-zinc-300 font-medium backdrop-blur-md">
-                <Film size={14} className="text-purple-400" />
+              <span className="flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-zinc-950/80 border border-zinc-800 text-[11px] text-zinc-300 font-medium backdrop-blur-md">
+                <Film size={12} className="text-purple-400" />
                 {project.platform}
               </span>
 
-              <div className="w-10 h-10 rounded-full bg-zinc-950/80 border border-zinc-800 flex items-center justify-center text-zinc-300 group-hover:text-white group-hover:bg-purple-600 transition-all shadow-lg backdrop-blur-md">
-                <Play size={18} className="fill-current ml-0.5" />
+              <div className="w-8 h-8 rounded-full bg-zinc-950/80 border border-zinc-800 flex items-center justify-center text-zinc-300 group-hover:text-white group-hover:bg-purple-600 transition-all shadow-md backdrop-blur-md">
+                <Play size={14} className="fill-current ml-0.5" />
               </div>
             </div>
 
-            {/* Bottom-Aligned Main Info */}
-            <div className="mt-auto pt-12 z-10 relative text-left">
-              <span className="text-xs font-mono text-purple-400 uppercase tracking-wider block mb-1">
+            {/* Bottom Info */}
+            <div className="mt-auto pt-8 z-10 relative text-left">
+              <span className="text-[10px] font-mono text-purple-400 uppercase tracking-wider block mb-0.5">
                 {project.category}
               </span>
-              <h3 className="text-3xl font-extrabold text-zinc-100 group-hover:text-white mb-1 tracking-tight">
+              <h3 className="text-2xl font-extrabold text-zinc-100 group-hover:text-white mb-1 tracking-tight">
                 {project.title}
               </h3>
-              <p className="text-zinc-400 text-sm font-mono">
+              <p className="text-zinc-400 text-xs font-mono">
                 {project.date}
               </p>
             </div>
